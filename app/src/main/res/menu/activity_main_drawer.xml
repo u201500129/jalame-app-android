@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_ubicacion"
+            android:icon="@drawable/ic_location_on_black_24dp"
+            android:title="Mi Ubicación" />
+        <item
+            android:id="@+id/nav_conductor"
+            android:icon="@drawable/ic_drive_eta_black_24dp"
+            android:title="Conductores" />
+        <item
+            android:id="@+id/nav_servicios"
+            android:icon="@drawable/ic_history_black_24dp"
+            android:title="Mis servicios" />
+        <item
+            android:id="@+id/nav_pagos"
+            android:icon="@drawable/ic_payment_black_24dp"
+            android:title="Pagos" />
+        <item
+            android:id="@+id/nav_manage"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Configurar" />
+    </group>
+
+    <item android:title="Comunicación">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Compartir" />
+            <item
+                android:id="@+id/nav_calificar"
+                android:icon="@drawable/ic_check_circle_black_24dp"
+                android:title="Calificar" />
+        </menu>
+    </item>
+
+</menu>
