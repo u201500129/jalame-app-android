@@ -1,5 +1,6 @@
 package pe.tp1.hdpeta.jalame;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -124,13 +125,42 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    //US02
     private void MostrarUbicacion() {
+        double pLongitud = Double.parseDouble(txtLongitud.getText().toString());
+        double pLatitud = Double.parseDouble(txtLatitud.getText().toString());
+        Bundle bundle = new Bundle();
+        bundle.putDouble("pLongitud",pLongitud);
+        bundle.putDouble("pLatitud",pLatitud);
+        Intent mapaActivity = new Intent(this, MyLocation.class);
+        mapaActivity.putExtras(bundle);
+        startActivity(mapaActivity);
+//        Intent mapaActivity = new Intent(this, MyLocation.class);
+//        startActivity(mapaActivity);
         String msg = "demo";
-        //geoLocation.getTextCoordinates(txtLongitud,txtLatitud,null,null );
         Toast.makeText(this,
                 "logitud es: "+txtLongitud.getText().toString()
                 + "\n latitud es:" + txtLatitud.getText().toString()
                 ,Toast.LENGTH_SHORT).show();
         //txtLatitud.setText(msg.toString());
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //ALF:para quitar el uso del gps y guardar bateria
+        geoLocation.stopLocationUpdates();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        geoLocation.stopLocationUpdates();
+    }
+    //--US02
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        geoLocation.stopLocationUpdates();
     }
 }
