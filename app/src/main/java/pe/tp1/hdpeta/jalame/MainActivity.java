@@ -12,16 +12,36 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import pe.tp1.hdpeta.jalame.utils.GeoLocation;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private GeoLocation geoLocation;
 
+    private String posLatitud;
+    private String posLongitud;
+    private EditText txtLatitud;
+    private EditText txtLongitud;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //US02
+        geoLocation = new GeoLocation(this);
+        txtLatitud =(EditText) findViewById(R.id.txtLatitud);
+        txtLatitud.setVisibility(View.GONE);
+        txtLongitud = (EditText) findViewById(R.id.txtLongitud) ;
+        txtLongitud.setVisibility(View.GONE);
+
+        geoLocation.getTextCoordinates(txtLongitud,txtLatitud,null,null );
+        //--US02
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -62,7 +82,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) { //aca
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -82,8 +102,9 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_ubicacion) {
-            // Handle the camera action
+        if (id == R.id.nav_location) {
+            // Accciones location:
+            MostrarUbicacion();
         } else if (id == R.id.nav_conductor) {
 
         } else if (id == R.id.nav_servicios) {
@@ -101,5 +122,15 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void MostrarUbicacion() {
+        String msg = "demo";
+        //geoLocation.getTextCoordinates(txtLongitud,txtLatitud,null,null );
+        Toast.makeText(this,
+                "logitud es: "+txtLongitud.getText().toString()
+                + "\n latitud es:" + txtLatitud.getText().toString()
+                ,Toast.LENGTH_SHORT).show();
+        //txtLatitud.setText(msg.toString());
     }
 }
