@@ -44,6 +44,9 @@ public class MyLocation extends FragmentActivity implements OnMapReadyCallback {
         LatLng lima = new LatLng(pLatitud, pLongitud);
         mMap.addMarker(new MarkerOptions().position(lima).title("Mi Ubicacion actual."));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(lima));
-        mMap.setMaxZoomPreference(1);
+        //para hacer el zoom in
+        LatLng latLng = new LatLng(pLatitud, pLongitud);
+        float zoomLevel = 16.0f;
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel));
     }
 }
