@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import pe.tp1.hdpeta.jalame.model.Vehiculo;
 import pe.tp1.hdpeta.jalame.utils.GeoLocation;
 
 public class MainActivity extends AppCompatActivity
@@ -107,7 +108,7 @@ public class MainActivity extends AppCompatActivity
             // Accciones location:
             MostrarUbicacion();
         } else if (id == R.id.nav_conductor) {
-
+            MostrarVehiculos();
         } else if (id == R.id.nav_servicios) {
 
         } else if (id == R.id.nav_pagos) {
@@ -123,6 +124,11 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void MostrarVehiculos() {
+        Intent vehicleActivity = new Intent(this, VistaVehiculos.class);
+        startActivity(vehicleActivity);
     }
 
     //US02

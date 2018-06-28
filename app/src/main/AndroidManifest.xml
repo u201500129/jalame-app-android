@@ -41,6 +41,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="pe.tp1.hdpeta.jalame.MainActivity" />
         </activity>
+        <activity android:name=".VistaVehiculos"></activity>
     </application>
 
 </manifest>
