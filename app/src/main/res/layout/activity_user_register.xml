@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:context=".UserRegisterActivity">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/ingrese_sus_nombres"
+        android:layout_marginBottom="5dp"
+        android:id="@+id/txtName"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/ingrese_sus_apellidos"
+        android:layout_marginBottom="5dp"
+        android:id="@+id/txtLastName"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/ingrese_su_email"
+        android:inputType="textEmailAddress"
+        android:layout_marginBottom="5dp"
+        android:id="@+id/txtEmail"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/ingrese_su_celular"
+        android:layout_marginBottom="5dp"
+        android:inputType="phone"
+        android:id="@+id/txtPhone"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/ingrese_su_password"
+        android:layout_marginBottom="5dp"
+        android:inputType="textPassword"
+        android:id="@+id/txtPassword"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/confirme_su_password"
+        android:layout_marginBottom="5dp"
+        android:inputType="textPassword"
+        android:id="@+id/txtConfirmPassword"/>
+
+    <Button
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:id="@+id/btnRegister"
+        android:text="@string/registrar"/>
+
+</LinearLayout>
