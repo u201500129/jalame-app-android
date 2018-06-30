@@ -15,6 +15,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText passwordEditText;
     private Button ingresarButton;
     private TextView lblNoAccount;
+    private TextView lblDriverSignUp;
 
 
     @Override
@@ -26,6 +27,14 @@ public class LoginActivity extends AppCompatActivity {
         passwordEditText = (EditText) findViewById(R.id.passwordEditText);
         ingresarButton = (Button) findViewById(R.id.ingresarButton);
         lblNoAccount = (TextView) findViewById(R.id.lblNoAccount);
+        lblDriverSignUp = (TextView) findViewById(R.id.lblDriverSignUp);
+
+        lblDriverSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OpenDriverSignUp();
+            }
+        });
 
         lblNoAccount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,6 +49,10 @@ public class LoginActivity extends AppCompatActivity {
                 validateInput();
             }
         });
+
+    }
+
+    private void OpenDriverSignUp() {
 
     }
 

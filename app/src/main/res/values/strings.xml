@@ -17,6 +17,7 @@
     <string name="confirme_su_password">Confirme su contraseña</string>
     <string name="registrar">Registrar</string>
     <string name="no_tienes_una_cuenta"><u>¿No tienes una cuenta?</u></string>
+    <string name="registrate_como_conductor">¿Tienes un vehículo? Registrate como conductor</string>
 
     <string-array name="Estado">
         <item value="A">Activo</item>
