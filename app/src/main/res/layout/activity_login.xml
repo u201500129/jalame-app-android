@@ -11,15 +11,15 @@
     tools:context=".LoginActivity">
 
     <ImageView
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
         android:layout_margin="10dp"
-        android:src="@drawable/logo"/>
+        android:src="@drawable/logo" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Ingrese su email"
+        android:hint="@string/ingrese_su_email"
         android:layout_margin="5dp"
         android:inputType="textEmailAddress"
         android:id="@+id/emailEditText"/>
@@ -28,14 +28,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:hint="Contraseña"
+        android:hint="@string/password"
         android:inputType="textPassword"
         android:id="@+id/passwordEditText"/>
 
     <Button
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text="Ingresar"
+        android:text="@string/ingresar"
+        android:layout_marginBottom="10dp"
         android:id="@+id/ingresarButton"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_tienes_una_cuenta"
+        android:selectAllOnFocus="false"
+        android:linksClickable="false"
+        android:autoLink="all"
+        android:id="@+id/lblNoAccount"/>
 
 </LinearLayout>

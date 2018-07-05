@@ -2,23 +2,40 @@ package pe.tp1.hdpeta.jalame.Bean;
 
 public class PersonBean {
 
-    int codpersona;
-    String nombre;
-    String apellido;
-    String sexo;
-    String dni;
-    String carrera;
-    String correo;
-    String estadop;
-    String clave;
-    String telefono;
+    private int codPersona;
+    private String nombre;
+    private String apellido;
+    private String sexo;
+    private String dni;
+    private String perfil;
+    private String carrera;
+    private String correo;
+    private String telefono;
+    private int calificacion;
+    private String clave;
+    private String estadoR;
 
-    public int getCodpersona() {
-        return codpersona;
+    public PersonBean(int codPersona, String nombre, String apellido, String sexo, String dni, String perfil, String carrera, String correo, String telefono, int calificacion, String clave, String estadoR) {
+        this.codPersona = codPersona;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.sexo = sexo;
+        this.dni = dni;
+        this.perfil = perfil;
+        this.carrera = carrera;
+        this.correo = correo;
+        this.telefono = telefono;
+        this.calificacion = calificacion;
+        this.clave = clave;
+        this.estadoR = estadoR;
     }
 
-    public void setCodpersona(int codpersona) {
-        this.codpersona = codpersona;
+    public int getCodPersona() {
+        return codPersona;
+    }
+
+    public void setCodPersona(int codPersona) {
+        this.codPersona = codPersona;
     }
 
     public String getNombre() {
@@ -53,6 +70,14 @@ public class PersonBean {
         this.dni = dni;
     }
 
+    public String getPerfil() {
+        return perfil;
+    }
+
+    public void setPerfil(String perfil) {
+        this.perfil = perfil;
+    }
+
     public String getCarrera() {
         return carrera;
     }
@@ -69,12 +94,20 @@ public class PersonBean {
         this.correo = correo;
     }
 
-    public String getEstadop() {
-        return estadop;
+    public String getTelefono() {
+        return telefono;
     }
 
-    public void setEstadop(String estadop) {
-        this.estadop = estadop;
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public int getCalificacion() {
+        return calificacion;
+    }
+
+    public void setCalificacion(int calificacion) {
+        this.calificacion = calificacion;
     }
 
     public String getClave() {
@@ -85,11 +118,11 @@ public class PersonBean {
         this.clave = clave;
     }
 
-    public String getTelefono() {
-        return telefono;
+    public String getEstadoR() {
+        return estadoR;
     }
 
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
+    public void setEstadoR(String estadoR) {
+        this.estadoR = estadoR;
     }
 }
