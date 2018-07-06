@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="pe.tp1.hdpeta.jalame">
+
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/logo"
@@ -19,7 +21,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".UserRegisterActivity"></activity>
+        <activity android:name=".UserSignUpActivity" />
+        <activity android:name=".DriverSignUpActivity"></activity>
     </application>
 
 </manifest>

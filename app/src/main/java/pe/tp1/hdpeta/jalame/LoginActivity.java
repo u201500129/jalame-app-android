@@ -1,8 +1,6 @@
 package pe.tp1.hdpeta.jalame;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -34,6 +32,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText passwordEditText;
     private Button ingresarButton;
     private TextView lblNoAccount;
+    private TextView lblDriverSignUp;
     ProgressDialog progressDialog;
 
     @Override
@@ -45,6 +44,14 @@ public class LoginActivity extends AppCompatActivity {
         passwordEditText = (EditText) findViewById(R.id.passwordEditText);
         ingresarButton = (Button) findViewById(R.id.ingresarButton);
         lblNoAccount = (TextView) findViewById(R.id.lblNoAccount);
+        lblDriverSignUp = (TextView) findViewById(R.id.lblDriverSignUp);
+
+        lblDriverSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDriverSignUp();
+            }
+        });
 
         lblNoAccount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,8 +69,13 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    private void openDriverSignUp() {
+        Intent driverSignUpActivity = new Intent(this, DriverSignUpActivity.class);
+        startActivity(driverSignUpActivity);
+    }
+
     private void OpenUserSignUpActivity() {
-        Intent userRegisterActivity = new Intent(this, UserRegisterActivity.class);
+        Intent userRegisterActivity = new Intent(this, UserSignUpActivity.class);
         startActivity(userRegisterActivity);
     }
 

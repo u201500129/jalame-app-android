@@ -17,4 +17,13 @@
     <string name="confirme_su_password">Confirme su contraseña</string>
     <string name="registrar">Registrar</string>
     <string name="no_tienes_una_cuenta"><u>¿No tienes una cuenta?</u></string>
+    <string name="poliza_soat">Poliza SOAT</string>
+    <string name="marca_del_auto">Marca del vehículo</string>
+    <string name="modelo_del_auto">Modelo del vehículo</string>
+    <string name="color_del_auto">Color del vehículo</string>
+    <string name="cantidad_de_asientos">Número de asientos</string>
+    <string name="estado">Estado</string>
+    <string name="guardar_registro">Guardar</string>
+    <string name="cancelar_registro">Cancelar</string>
+    <string name="tengo_auto_propio">Tengo auto propio</string>
 </resources>

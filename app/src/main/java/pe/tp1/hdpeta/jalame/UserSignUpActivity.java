@@ -7,7 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class UserRegisterActivity extends AppCompatActivity {
+public class UserSignUpActivity extends AppCompatActivity {
 
     private EditText txtName;
     private EditText txtLastName;
@@ -42,9 +42,15 @@ public class UserRegisterActivity extends AppCompatActivity {
         if (!IsValidForm()) {
             return;
         }
-
+        
+        saveUserInformation();
+        
         Toast.makeText(this, "Usuario registrado correctamente", Toast.LENGTH_SHORT).show();
         CleanForm();
+    }
+
+    private void saveUserInformation() {
+
     }
 
     private void CleanForm(){
