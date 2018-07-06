@@ -17,7 +17,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import pe.tp1.hdpeta.jalame.model.Vehiculo;
 import pe.tp1.hdpeta.jalame.utils.GeoLocation;
 
 public class MainActivity extends AppCompatActivity

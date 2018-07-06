@@ -1,8 +1,13 @@
 package pe.tp1.hdpeta.jalame.utils;
 
+import android.view.View;
+import android.widget.Toast;
+
 import java.text.DecimalFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import pe.tp1.hdpeta.jalame.VistaVehiculos;
 
 public class Utilitario {
     public static boolean isInteger(String pNumber)
@@ -46,4 +51,5 @@ public class Utilitario {
         DecimalFormat twoDForm = new DecimalFormat(pattern);
         return Double.valueOf(twoDForm.format(d));
     }
+
 }
