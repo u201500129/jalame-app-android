@@ -5,13 +5,13 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_ubicacion"
+            android:id="@+id/nav_location"
             android:icon="@drawable/ic_location_on_black_24dp"
-            android:title="Mi Ubicación" />
+            android:title="@string/location_bar" />
         <item
             android:id="@+id/nav_conductor"
             android:icon="@drawable/ic_drive_eta_black_24dp"
-            android:title="Conductores" />
+            android:title="@string/vehicle_bar" />
         <item
             android:id="@+id/nav_servicios"
             android:icon="@drawable/ic_history_black_24dp"

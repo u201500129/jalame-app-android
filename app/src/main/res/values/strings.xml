@@ -23,4 +23,7 @@
         <item value="A">Activo</item>
         <item value="I">Inactivo</item>
     </string-array>
+    <string name="location_bar">Mi Ubicacion</string>
+    <string name="title_activity_my_location">Map</string>
+    <string name="vehicle_bar">Vehiculos</string>
 </resources>
