@@ -44,6 +44,7 @@
         android:layout_height="wrap_content"
         android:text="@string/no_tienes_una_cuenta"
         android:selectAllOnFocus="false"
+        android:layout_marginBottom="10dp"
         android:linksClickable="false"
         android:autoLink="all"
         android:id="@+id/lblNoAccount"/>
@@ -51,7 +52,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/registrate_como_conductor"
+        android:text="@string/tengo_auto_propio"
         android:selectAllOnFocus="false"
         android:linksClickable="false"
         android:autoLink="all"

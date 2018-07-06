@@ -26,4 +26,13 @@
     <string name="location_bar">Mi Ubicacion</string>
     <string name="title_activity_my_location">Map</string>
     <string name="vehicle_bar">Vehiculos</string>
+    <string name="poliza_soat">Poliza SOAT</string>
+    <string name="marca_del_auto">Marca del vehículo</string>
+    <string name="modelo_del_auto">Modelo del vehículo</string>
+    <string name="color_del_auto">Color del vehículo</string>
+    <string name="cantidad_de_asientos">Número de asientos</string>
+    <string name="estado">Estado</string>
+    <string name="guardar_registro">Guardar</string>
+    <string name="cancelar_registro">Cancelar</string>
+    <string name="tengo_auto_propio">Tengo auto propio</string>
 </resources>

@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="pe.tp1.hdpeta.jalame">
 
+<<<<<<< HEAD
     <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -17,6 +18,8 @@
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+=======
+>>>>>>> US23
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -35,6 +38,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<<<<<<< HEAD
         <activity
             android:name=".MyLocation"
             android:label="@string/title_activity_my_location">
@@ -44,6 +48,11 @@
         </activity>
         <activity android:name=".LoginActivity"></activity>
         <activity android:name=".VistaVehiculos"></activity>
+=======
+        <activity android:name=".MainActivity" />
+        <activity android:name=".UserSignUpActivity" />
+        <activity android:name=".DriverSignUpActivity"></activity>
+>>>>>>> US23
     </application>
 
 </manifest>

@@ -1,6 +1,9 @@
 package pe.tp1.hdpeta.jalame.Bean;
 
+import java.util.Date;
+
 public class VehiculoBean {
+
     private int codVehiculo;
     private int codPersona;
     private String polizaSoat;
@@ -16,14 +19,11 @@ public class VehiculoBean {
     private String visible;
     private int calificacion;
     private String estadoR;
-    private int foto;
-    private String tsupdate;
+    private byte foto;
+    private Date tsupdate;
     private int distancia;
 
-    public VehiculoBean(int codVehiculo, int codPersona, String polizaSoat, String marca, String modelo,
-                        String aFabrica, String matricula, String color, int asientosTotal,
-                        int asientosDisp, String latitud, String longitud, String visible, int calificacion,
-                        String estadoR, int foto, String tsupdate, int distancia) {
+    public VehiculoBean(int codVehiculo, int codPersona, String polizaSoat, String marca, String modelo, String aFabrica, String matricula, String color, int asientosTotal, int asientosDisp, String latitud, String longitud, String visible, int calificacion, String estadoR, byte foto, Date tsupdate, int distancia) {
         this.codVehiculo = codVehiculo;
         this.codPersona = codPersona;
         this.polizaSoat = polizaSoat;
@@ -164,19 +164,19 @@ public class VehiculoBean {
         this.estadoR = estadoR;
     }
 
-    public int getFoto() {
+    public byte getFoto() {
         return foto;
     }
 
-    public void setFoto(int foto) {
+    public void setFoto(byte foto) {
         this.foto = foto;
     }
 
-    public String getTsupdate() {
+    public Date getTsupdate() {
         return tsupdate;
     }
 
-    public void setTsupdate(String tsupdate) {
+    public void setTsupdate(Date tsupdate) {
         this.tsupdate = tsupdate;
     }
 
