@@ -100,7 +100,6 @@ public class DriverSignUpActivity extends AppCompatActivity {
                 "",
                 0,
                 spnStateValuesArray.get(spnDriverState.getSelectedItemPosition()),
-                Byte.valueOf(""),
                 new Date());
 
         Retrofit retrofit = new Retrofit.Builder()
