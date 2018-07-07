@@ -44,14 +44,6 @@ public class LoginActivity extends AppCompatActivity {
         passwordEditText = (EditText) findViewById(R.id.passwordEditText);
         ingresarButton = (Button) findViewById(R.id.ingresarButton);
         lblNoAccount = (TextView) findViewById(R.id.lblNoAccount);
-        lblDriverSignUp = (TextView) findViewById(R.id.lblDriverSignUp);
-
-        lblDriverSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openDriverSignUp();
-            }
-        });
 
         lblNoAccount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,10 +61,6 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void openDriverSignUp() {
-        Intent driverSignUpActivity = new Intent(this, DriverSignUpActivity.class);
-        startActivity(driverSignUpActivity);
-    }
 
     private void OpenUserSignUpActivity() {
         Intent userRegisterActivity = new Intent(this, UserSignUpActivity.class);

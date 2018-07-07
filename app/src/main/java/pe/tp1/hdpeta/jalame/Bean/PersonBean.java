@@ -15,6 +15,8 @@ public class PersonBean {
     private String clave;
     private String estadoR;
 
+    public PersonBean(){}
+
     public PersonBean(int codPersona, String nombre, String apellido, String sexo, String dni, String perfil, String carrera, String correo, String telefono, int calificacion, String clave, String estadoR) {
         this.codPersona = codPersona;
         this.nombre = nombre;
