@@ -108,7 +108,7 @@ public class UserRegisterActivity extends AppCompatActivity {
             return false;
         }
 
-        if (txtPassword.getText().toString() != txtConfirmPassword.getText().toString()){
+        if (!txtPassword.getText().toString().equals(txtConfirmPassword.getText().toString())){
             Toast.makeText(this, "La contraseña ingresada no son iguales", Toast.LENGTH_SHORT).show();
             return false;
         }
