@@ -6,7 +6,7 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_blank_fragment">Blank Fragment</string>
+    <string name="map_fragment">Mapa</string>
     <string name="ingrese_su_email">Ingrese su email</string>
     <string name="password">Contraseña</string>
     <string name="ingresar">Ingresar</string>
@@ -26,4 +26,7 @@
     <string name="guardar_registro">Guardar</string>
     <string name="cancelar_registro">Cancelar</string>
     <string name="tengo_auto_propio">Tengo auto propio</string>
+    <string name="google_api_key">AIzaSyBdVl-cTICSwYKrZ95SuvNw7dbMuDt1KG0</string>
+    <string name="servicios_fragment">servicio</string>
+    <string name="location_fragment">Location</string>
 </resources>

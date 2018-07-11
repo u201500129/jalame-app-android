@@ -1,4 +1,4 @@
-package pe.tp1.hdpeta.jalame;
+package pe.tp1.hdpeta.jalame.Activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +17,7 @@ import java.util.List;
 import pe.tp1.hdpeta.jalame.Bean.PersonBean;
 import pe.tp1.hdpeta.jalame.Bean.VehiculoBean;
 import pe.tp1.hdpeta.jalame.Interface.RestClient;
+import pe.tp1.hdpeta.jalame.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

@@ -1,4 +1,4 @@
-package pe.tp1.hdpeta.jalame;
+package pe.tp1.hdpeta.jalame.Activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -18,6 +18,7 @@ import com.google.gson.GsonBuilder;
 
 import pe.tp1.hdpeta.jalame.Bean.PersonBean;
 import pe.tp1.hdpeta.jalame.Interface.RestClient;
+import pe.tp1.hdpeta.jalame.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

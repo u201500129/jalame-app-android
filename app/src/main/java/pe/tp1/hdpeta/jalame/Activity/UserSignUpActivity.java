@@ -1,23 +1,20 @@
-package pe.tp1.hdpeta.jalame;
+package pe.tp1.hdpeta.jalame.Activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import java.util.HashMap;
 
 import pe.tp1.hdpeta.jalame.Bean.PersonBean;
 import pe.tp1.hdpeta.jalame.Interface.RestClient;
+import pe.tp1.hdpeta.jalame.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

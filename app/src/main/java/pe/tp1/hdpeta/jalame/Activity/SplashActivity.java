@@ -1,4 +1,4 @@
-package pe.tp1.hdpeta.jalame;
+package pe.tp1.hdpeta.jalame.Activity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
