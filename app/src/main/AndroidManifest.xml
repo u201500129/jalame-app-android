@@ -14,15 +14,20 @@
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name">
+
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".UserSignUpActivity" />
+        <activity android:name=".DriverSignUpActivity" />
+        <activity android:theme="@style/SplashTheme"
+            android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
-        <activity android:name=".UserSignUpActivity" />
-        <activity android:name=".DriverSignUpActivity"></activity>
     </application>
 
 </manifest>
