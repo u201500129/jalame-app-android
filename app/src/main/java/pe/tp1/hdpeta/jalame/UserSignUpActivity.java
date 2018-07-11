@@ -57,6 +57,8 @@ public class UserSignUpActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (ckbHaveCar.isChecked()) {
                     btnRegister.setText("Continuar");
+                } else {
+                    btnRegister.setText("Registrar");
                 }
             }
         });
@@ -105,6 +107,7 @@ public class UserSignUpActivity extends AppCompatActivity {
             startActivity(driverSignUpIntent);
         } else {
             openMainActivity();
+            finish();
         }
     }
 

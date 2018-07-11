@@ -111,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
                     case 200:
                         PersonBean data = response.body();
                         Log.d("Data", data.getNombre());
-                        openMainActivity();
+                        openMainActivityWithPerson(data);
                         break;
                     case 404:
                         Log.d("Error message ", response.raw().toString());
@@ -132,9 +132,15 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void openMainActivity() {
+    private void openMainActivityWithPerson(PersonBean personBean) {
+
+        Bundle personBundle = new Bundle();
+        personBundle.putString("nombre", personBean.getNombre());
+        personBundle.putString("email", personBean.getCorreo());
         Intent mainActivity = new Intent(this, MainActivity.class);
+        mainActivity.putExtras(personBundle);
         startActivity(mainActivity);
+        finish();
     }
 
 
