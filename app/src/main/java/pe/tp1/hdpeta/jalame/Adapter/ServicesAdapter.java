@@ -37,8 +37,7 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.Servic
         holder.txtServiceDate.setText(services.get(position).getFecRegistro().toString());
         holder.txtOriginDescription.setText(services.get(position).getOrigenDes());
         holder.txtDestinyDescription.setText(services.get(position).getDestinoDes());
-        holder.txtDriverCalification.setText(services.get(position).getCalificacionConductor());
-        holder.txtSerivceState.setText(services.get(position).getEstadoServ());
+
     }
 
     @Override
@@ -52,8 +51,7 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.Servic
         public TextView txtServiceDate;
         public TextView txtOriginDescription;
         public TextView txtDestinyDescription;
-        public TextView txtDriverCalification;
-        public TextView txtSerivceState;
+
 
         public ServiceViewHolder(View itemView) {
             super(itemView);
@@ -62,8 +60,7 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.Servic
             txtServiceDate = (TextView) itemView.findViewById(R.id.txtServiceDate);
             txtOriginDescription = (TextView) itemView.findViewById(R.id.txtOriginDescription);
             txtDestinyDescription = (TextView) itemView.findViewById(R.id.txtDestinyDescription);
-            txtDriverCalification = (TextView) itemView.findViewById(R.id.txtDriverCalification);
-            txtSerivceState = (TextView) itemView.findViewById(R.id.txtSerivceState);
+
         }
     }
 }

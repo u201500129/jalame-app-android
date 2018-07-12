@@ -25,7 +25,27 @@ public class ServicioBean {
     private String estadoR;
     private Date tsupdate;
 
-    public ServicioBean(int codServicio, int codConductor, int codUsuario, int codVehiculo, int codTarifa, int codFormaPago, Date fecRegistro, Date inicioServ, Date finServ, String origenDes, String origenLat, String origenLon, String destinoDes, String destinoLat, String destinoLon, int calificacionUsuario, int calificacionConductor, int calificacionVehiculo, String estadoServ, String estadoR, Date tsupdate) {
+    public ServicioBean(int codServicio,
+                        int codConductor,
+                        int codUsuario,
+                        int codVehiculo,
+                        int codTarifa,
+                        int codFormaPago,
+                        Date fecRegistro,
+                        Date inicioServ,
+                        Date finServ,
+                        String origenDes,
+                        String origenLat,
+                        String origenLon,
+                        String destinoDes,
+                        String destinoLat,
+                        String destinoLon,
+                        int calificacionUsuario,
+                        int calificacionConductor,
+                        int calificacionVehiculo,
+                        String estadoServ,
+                        String estadoR,
+                        Date tsupdate) {
         this.codServicio = codServicio;
         this.codConductor = codConductor;
         this.codUsuario = codUsuario;
