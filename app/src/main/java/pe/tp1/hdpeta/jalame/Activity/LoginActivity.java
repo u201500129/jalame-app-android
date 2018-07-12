@@ -68,13 +68,6 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(userRegisterActivity);
     }
 
-    private void hideSoftKeyBoard() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-
-        if(imm.isAcceptingText()) { // verify if the soft keyboard is open
-            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-        }
-    }
     private void validateInput() {
         if (emailEditText.getText().toString().isEmpty()) {
             Toast.makeText(this, "Inserse su email", Toast.LENGTH_SHORT).show();
@@ -84,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "Inserse su password", Toast.LENGTH_SHORT).show();
             return;
         }
-        hideSoftKeyBoard();
+
         progressDialog = ProgressDialog.show(this,"Iniciando Sesión", "Porfavor espere..");
         callLogin(emailEditText.getText().toString(), passwordEditText.getText().toString());
     }
@@ -111,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
                 switch (response.code()) {
                     case 200:
                         PersonBean data = response.body();
-                        Log.d("Data", data.getNombre());
+                        Log.d("Person Code", String.valueOf(data.getCodPersona()));
                         openMainActivityWithPerson(data);
                         break;
                     case 404:

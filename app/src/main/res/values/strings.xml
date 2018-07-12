@@ -29,4 +29,12 @@
     <string name="google_api_key">AIzaSyAneF72iiRGQaGj56zwojtdChoAvR7fU6I</string>
     <string name="servicios_fragment">servicio</string>
     <string name="location_fragment">Location</string>
+    <string name="service_date">Fecha del servicio</string>
+    <string name="service_origin_description">Origen</string>
+    <string name="services_destiny_description">Destino</string>
+    <string name="driver_calification">Calificación al conductor</string>
+    <string name="service_state">Estado del servicio</string>
+    <string name="marca_y_modelo_del_auto">Marca y modelo del vehículo</string>
+    <string name="placa_del_auto">Matrícula del vehículo</string>
+    <string name="car_distance">Distancia del vehículo</string>
 </resources>

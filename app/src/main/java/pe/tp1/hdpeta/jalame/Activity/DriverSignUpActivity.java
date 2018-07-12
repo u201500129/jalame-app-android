@@ -101,8 +101,10 @@ public class DriverSignUpActivity extends AppCompatActivity {
                 "",
                 0,
                 spnStateValuesArray.get(spnDriverState.getSelectedItemPosition()),
-                new Date());
-
+                Byte.valueOf(""),
+                new Date(),
+                0
+                );
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
