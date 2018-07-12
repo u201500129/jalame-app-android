@@ -26,7 +26,7 @@
     <string name="guardar_registro">Guardar</string>
     <string name="cancelar_registro">Cancelar</string>
     <string name="tengo_auto_propio">Tengo auto propio</string>
-    <string name="google_api_key">AIzaSyBdVl-cTICSwYKrZ95SuvNw7dbMuDt1KG0</string>
+    <string name="google_api_key">AIzaSyAneF72iiRGQaGj56zwojtdChoAvR7fU6I</string>
     <string name="servicios_fragment">servicio</string>
     <string name="location_fragment">Location</string>
 </resources>

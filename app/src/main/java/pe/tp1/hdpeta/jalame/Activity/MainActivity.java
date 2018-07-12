@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import pe.tp1.hdpeta.jalame.Fragment.MapFragment;
 import pe.tp1.hdpeta.jalame.Fragment.ServiciosFragment;
-import pe.tp1.hdpeta.jalame.Fragment.UbicacionFragment;
+import pe.tp1.hdpeta.jalame.Fragment.NearDriversFragment;
 import pe.tp1.hdpeta.jalame.R;
 
 public class MainActivity extends AppCompatActivity
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_ubicacion) {
             fragmentManager.beginTransaction().replace(R.id.container, new MapFragment()).commit();
         } else if (id == R.id.nav_conductor) {
-            fragmentManager.beginTransaction().replace(R.id.container, new UbicacionFragment()).commit();
+            fragmentManager.beginTransaction().replace(R.id.container, new NearDriversFragment()).commit();
         } else if (id == R.id.nav_servicios) {
             fragmentManager.beginTransaction().replace(R.id.container, new ServiciosFragment()).commit();
         } else if (id == R.id.nav_pagos) {
