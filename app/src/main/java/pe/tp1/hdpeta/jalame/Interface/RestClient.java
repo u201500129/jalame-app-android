@@ -1,6 +1,9 @@
 package pe.tp1.hdpeta.jalame.Interface;
 
+import java.lang.reflect.Array;
+
 import pe.tp1.hdpeta.jalame.Bean.PersonBean;
+import pe.tp1.hdpeta.jalame.Bean.ServicioBean;
 import pe.tp1.hdpeta.jalame.Bean.VehiculoBean;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -20,4 +23,7 @@ public interface RestClient {
 
     @POST("/jalame/vehiculo/add")
     Call<VehiculoBean> createCar(@Body VehiculoBean vehiculoBean);
+
+    @GET("/jalame/servicio/list/user/{userID}")
+    Call<ServicioBean> getUserServices();
 }
