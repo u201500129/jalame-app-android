@@ -8,3 +8,11 @@
 /build
 /captures
 .externalNativeBuild
+
+# IDEA/Android Studio Ignore exceptions
+!/.idea/fileTemplates/
+!/.idea/inspectionProfiles/
+!/.idea/scopes/
+!/.idea/codeStyles/
+!/.idea/encodings.xml
+!/.idea/copyright/
