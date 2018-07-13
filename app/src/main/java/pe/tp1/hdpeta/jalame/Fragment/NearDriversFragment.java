@@ -40,7 +40,11 @@ public class NearDriversFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_near_drivers, container, false);
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.nearDriversRecyclerView);
+        layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
 
+        adapter = new NearDriversAdapter(cars);
+        recyclerView.setAdapter(adapter);
 
         FillNearDrivers();
         return rootView;
@@ -61,11 +65,7 @@ public class NearDriversFragment extends Fragment {
             public void onResponse(Call<List<VehiculoBean>> call, Response<List<VehiculoBean>> response) {
                 switch (response.code()){
                     case 200:
-                        layoutManager = new LinearLayoutManager(getActivity());
-                        recyclerView.setLayoutManager(layoutManager);
 
-                        adapter = new NearDriversAdapter(response.body());
-                        recyclerView.setAdapter(adapter);
                         break;
                     default:
                         break;
