@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import java.util.HashMap;
@@ -34,6 +35,8 @@ public class UserSignUpActivity extends AppCompatActivity {
     private EditText txtDNI;
     private CheckBox ckbHaveCar;
     private Button btnRegister;
+    private RadioButton radioActivadoMan;
+    private RadioButton radioDesactivadoFemale;
 
     private ProgressDialog progressDialog;
 
@@ -52,6 +55,8 @@ public class UserSignUpActivity extends AppCompatActivity {
         txtConfirmPassword = (EditText) findViewById(R.id.txtConfirmPassword);
         btnRegister = (Button) findViewById(R.id.btnRegister);
         ckbHaveCar = (CheckBox) findViewById(R.id.ckbHaveCar);
+        radioDesactivadoFemale = (RadioButton) findViewById(R.id.radioDesactivadoFemale);
+        radioActivadoMan = (RadioButton) findViewById(R.id.radioActivadoMan);
         ckbHaveCar.setChecked(false);
         ckbHaveCar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,7 +99,11 @@ public class UserSignUpActivity extends AppCompatActivity {
             newPerson.setPerfil("U");
         }
 
-        newPerson.setSexo("");
+        if (radioActivadoMan.isChecked()){
+            newPerson.setSexo("M");
+        } else {
+            newPerson.setSexo("F");
+        }
 
         saveUserInformation(newPerson);
 
