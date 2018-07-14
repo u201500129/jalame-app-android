@@ -107,30 +107,9 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Contraseña"
+            android:hint="Contraseña"
             android:id="@+id/txtPassword"/>
 
-        <RadioGroup
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/radioButtonsGroup"
-            android:orientation="horizontal">
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/radioActivado"
-                android:checked="true"
-                android:text="Activado"/>
-
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/radioDesactivado"
-                android:checked="false"
-                android:text="Desactivado"/>
-
-        </RadioGroup>
 
         <Button
             android:layout_width="200dp"

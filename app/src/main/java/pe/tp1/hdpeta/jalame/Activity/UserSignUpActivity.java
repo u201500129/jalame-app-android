@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -106,6 +107,8 @@ public class UserSignUpActivity extends AppCompatActivity {
         DBHelper bd = new DBHelper(this);
         bd.savePerson(personBean);
 
+        Log.d("DNI", personBean.getDni());
+
         if (ckbHaveCar.isChecked()) {
             Intent driverSignUpIntent = new Intent(this, DriverSignUpActivity.class);
             startActivity(driverSignUpIntent);
@@ -147,6 +150,7 @@ public class UserSignUpActivity extends AppCompatActivity {
     private void CleanForm(){
         txtName.setText("");
         txtLastName.setText("");
+        txtDNI.setText("");
         txtEmail.setText("");
         txtPhone.setText("");
         txtPassword.setText("");

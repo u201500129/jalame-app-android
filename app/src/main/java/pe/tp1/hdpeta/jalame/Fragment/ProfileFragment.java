@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -33,7 +34,8 @@ public class ProfileFragment extends Fragment {
     private EditText txtCarrera;
     private EditText lblCalificacion;
     private EditText txtPassword;
-    private RadioGroup radioButtonsGroup;
+    private RadioButton radioActivadoMan;
+    private RadioButton radioDesactivadoFemale;
     private Button btnSave;
 
     private PersonBean currentPerson;
@@ -58,7 +60,8 @@ public class ProfileFragment extends Fragment {
         txtCarrera = (EditText) rootView.findViewById(R.id.txtCarrera);
         lblCalificacion = (EditText) rootView.findViewById(R.id.lblCalificacion);
         txtPassword = (EditText) rootView.findViewById(R.id.txtPassword);
-        radioButtonsGroup = (RadioGroup) rootView.findViewById(R.id.radioButtonsGroup);
+        radioActivadoMan = (RadioButton) rootView.findViewById(R.id.radioActivadoMan);
+        radioDesactivadoFemale = (RadioButton) rootView.findViewById(R.id.radioDesactivadoFemale);
         btnSave = (Button) rootView.findViewById(R.id.btnSave);
 
         setCurrenPerson();
@@ -82,6 +85,12 @@ public class ProfileFragment extends Fragment {
         txtDNI.setText(currentPerson.getDni());
         txtCarrera.setText(currentPerson.getCarrera());
         lblCalificacion.setText(String.valueOf(currentPerson.getCalificacion()));
+
+        if (currentPerson.getSexo() == "M"){
+            radioActivadoMan.setChecked(true);
+        } else {
+            radioDesactivadoFemale.setChecked(true);
+        }
     }
 
     private void updatePersonBean() {
@@ -90,12 +99,18 @@ public class ProfileFragment extends Fragment {
             return;
         }
 
+        String sexo;
+        if (radioActivadoMan.isChecked()) {
+            sexo = "M";
+        } else {
+            sexo = "F";
+        }
 
         PersonBean updatedPerson = new PersonBean(
                 currentPerson.getCodPersona(),
                 txtName.getText().toString(),
                 txtLastName.getText().toString(),
-                "",
+                sexo,
                 txtDNI.getText().toString(),
                 "",
                 txtCarrera.getText().toString(),

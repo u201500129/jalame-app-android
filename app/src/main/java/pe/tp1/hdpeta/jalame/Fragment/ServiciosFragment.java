@@ -65,7 +65,7 @@ public class ServiciosFragment extends Fragment {
         RestClient restClient = RetrofitInstance.getRetrofitInstance().create(RestClient.class);
         DBHelper db = new DBHelper(getContext());
         PersonBean personBean = db.personBean();
-        Call<ServiceList> call = restClient.services(personBean.getCodPersona());
+        Call<ServiceList> call = restClient.services(1);
 
         Log.d("URL Called", call.request().url() + "");
 
