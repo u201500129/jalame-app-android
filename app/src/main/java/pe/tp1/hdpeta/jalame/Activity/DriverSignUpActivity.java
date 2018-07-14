@@ -91,6 +91,7 @@ public class DriverSignUpActivity extends AppCompatActivity {
         DBHelper db = new DBHelper(this);
         PersonBean personBean = db.personBean();
 
+
         VehiculoBean newCar = new VehiculoBean(0,
                 personBean.getCodPersona(),
                 "",
@@ -106,7 +107,7 @@ public class DriverSignUpActivity extends AppCompatActivity {
                 "",
                 0,
                 spnStateValuesArray.get(spnDriverState.getSelectedItemPosition()),
-                new Date().toString(),
+                "",
                 0
                 );
 
