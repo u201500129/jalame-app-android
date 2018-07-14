@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,6 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import pe.tp1.hdpeta.jalame.Bean.PersonBean;
+import pe.tp1.hdpeta.jalame.DataBase.DBHelper;
 import pe.tp1.hdpeta.jalame.Fragment.MapFragment;
 import pe.tp1.hdpeta.jalame.Fragment.ServiciosFragment;
 import pe.tp1.hdpeta.jalame.Fragment.NearDriversFragment;
@@ -49,14 +52,19 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        txtUserName = (TextView) findViewById(R.id.txtUserName);
-        txtUserEmail = (TextView) findViewById(R.id.txtUserEmail);
+        View headerLayout = navigationView.getHeaderView(0);
+
+        txtUserName = (TextView) headerLayout.findViewById(R.id.txtUserName);
+        txtUserEmail = (TextView) headerLayout.findViewById(R.id.txtUserEmail);
         navigationView.setNavigationItemSelectedListener(this);
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.container, new MapFragment()).commit();
 
-        //txtUserName.setText(getIntent().getExtras().getString("nombre"));
-        //txtUserEmail.setText(getIntent().getExtras().getString("email"));
+        DBHelper db = new DBHelper(this);
+        PersonBean personBean = db.personBean();
+
+        txtUserName.setText(personBean.getNombre());
+        txtUserEmail.setText(personBean.getCorreo());
     }
 
     @Override
@@ -114,15 +122,19 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_calificar) {
 
         } else if (id == R.id.nav_logout) {
-
-            Intent loginActivity = new Intent(this, LoginActivity.class);
-            startActivity(loginActivity);
-            finish();
-
+            logoutUser();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void logoutUser() {
+
+        this.deleteDatabase("Jalame.bd");
+        Intent loginActivity = new Intent(this, LoginActivity.class);
+        startActivity(loginActivity);
+        finish();
     }
 }
