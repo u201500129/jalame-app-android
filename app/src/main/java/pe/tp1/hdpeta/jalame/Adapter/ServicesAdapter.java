@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import pe.tp1.hdpeta.jalame.Bean.ServicioBean;
@@ -17,9 +18,9 @@ import pe.tp1.hdpeta.jalame.R;
 
 public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.ServiceViewHolder>{
 
-    List<ServicioBean> services;
+    ArrayList<ServicioBean> services;
 
-    public ServicesAdapter(List<ServicioBean> services){
+    public ServicesAdapter(ArrayList<ServicioBean> services){
         this.services = services;
     }
 
@@ -64,7 +65,7 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.Servic
         }
     }
 
-    public void updateNewServices(List<ServicioBean> services){
+    public void updateNewServices(ArrayList<ServicioBean> services){
         this.services = services;
         notifyDataSetChanged();
     }

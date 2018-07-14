@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import pe.tp1.hdpeta.jalame.Bean.VehiculoBean;
@@ -16,9 +17,9 @@ import pe.tp1.hdpeta.jalame.R;
 
 public class NearDriversAdapter extends RecyclerView.Adapter<NearDriversAdapter.NearDriversViewHolder> {
 
-    List<VehiculoBean> cars;
+    ArrayList<VehiculoBean> cars;
 
-    public NearDriversAdapter(List<VehiculoBean> cars){
+    public NearDriversAdapter(ArrayList<VehiculoBean> cars){
         this.cars = cars;
     }
     @NonNull
@@ -32,7 +33,7 @@ public class NearDriversAdapter extends RecyclerView.Adapter<NearDriversAdapter.
     @Override
     public void onBindViewHolder(@NonNull NearDriversAdapter.NearDriversViewHolder holder, int position) {
 
-        String marcaModel = cars.get(position).getMarca() + " - " + cars.get(position).getModelo();
+        String marcaModel = cars.get(position).getMarca() + " " + cars.get(position).getModelo();
         holder.txtBrandModelCar.setText(marcaModel);
         holder.txtLicenseRegistrationCar.setText(cars.get(position).getMatricula());
         String distanceKM = cars.get(position).getDistancia() + "km";
