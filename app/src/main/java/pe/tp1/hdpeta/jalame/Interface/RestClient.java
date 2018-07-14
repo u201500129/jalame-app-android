@@ -18,7 +18,7 @@ public interface RestClient {
     Call<ServiceList> services(@Path("userId") int userId);
 
     @GET("jalame/vehiculo/list/{userId}/{latitud}/{longitud}/")
-    Call<List<VehiculoBean>> nearDrivers(
+    Call<NearDriverList> nearDrivers(
             @Path("userId") int userId,
             @Path("latitud") String latitude,
             @Path("longitud") String longitud);

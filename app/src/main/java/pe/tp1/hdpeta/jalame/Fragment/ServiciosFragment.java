@@ -1,5 +1,6 @@
 package pe.tp1.hdpeta.jalame.Fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,8 +38,9 @@ public class ServiciosFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private List<ServicioBean> services = new ArrayList<>();
-    private RecyclerView.Adapter adapter;
+    private ServicesAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
+    ProgressDialog progressDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,11 +49,9 @@ public class ServiciosFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_servicios, container, false);
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.servicesRecyclerView);
-        layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new ServicesAdapter(services);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        progressDialog = ProgressDialog.show(getContext(),"Cargando servicios", "Porfavor espere..");
         FillServices();
 
         return rootView;
@@ -68,11 +68,13 @@ public class ServiciosFragment extends Fragment {
         call.enqueue(new Callback<ServiceList>() {
             @Override
             public void onResponse(Call<ServiceList> call, Response<ServiceList> response) {
+                progressDialog.dismiss();
                 generateServiceList(response.body().getServiceArrayList());
             }
 
             @Override
             public void onFailure(Call<ServiceList> call, Throwable t) {
+                progressDialog.dismiss();
                 Log.d("Error", t.getMessage());
             }
         });
@@ -80,9 +82,8 @@ public class ServiciosFragment extends Fragment {
     }
 
     private void generateServiceList(ArrayList<ServicioBean> serviceArrayList) {
-        Log.d("Nombre: ", serviceArrayList.get(0).getUsuario());
         adapter = new ServicesAdapter(serviceArrayList);
-        adapter.notifyDataSetChanged();
+        recyclerView.setAdapter(adapter);
     }
 
 
