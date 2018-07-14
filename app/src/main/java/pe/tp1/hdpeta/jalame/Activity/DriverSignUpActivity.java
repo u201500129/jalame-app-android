@@ -1,5 +1,6 @@
 package pe.tp1.hdpeta.jalame.Activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,7 @@ import pe.tp1.hdpeta.jalame.Bean.PersonBean;
 import pe.tp1.hdpeta.jalame.Bean.VehiculoBean;
 import pe.tp1.hdpeta.jalame.Interface.RestClient;
 import pe.tp1.hdpeta.jalame.R;
+import pe.tp1.hdpeta.jalame.Singleton.VehiculoSingleton;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -101,7 +103,6 @@ public class DriverSignUpActivity extends AppCompatActivity {
                 "",
                 0,
                 spnStateValuesArray.get(spnDriverState.getSelectedItemPosition()),
-                Byte.valueOf(""),
                 new Date(),
                 0
                 );
@@ -119,9 +120,8 @@ public class DriverSignUpActivity extends AppCompatActivity {
                 switch (response.code()){
                     case 200:
 
-                        VehiculoBean vehiculoBean = response.body();
-
-                        Log.d("Vehículo marca:", vehiculoBean.getMarca());
+                        VehiculoSingleton.getInstance().setVehiculoBean(response.body());
+                        openMainActivity();
 
                     default:
                         break;
@@ -134,5 +134,10 @@ public class DriverSignUpActivity extends AppCompatActivity {
             }
         });
 
+    }
+    private void openMainActivity() {
+        Intent mainActivity = new Intent(this, MainActivity.class);
+        startActivity(mainActivity);
+        finish();
     }
 }

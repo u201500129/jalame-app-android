@@ -14,12 +14,12 @@ import java.util.HashMap;
 
 import pe.tp1.hdpeta.jalame.Bean.PersonBean;
 import pe.tp1.hdpeta.jalame.Interface.RestClient;
+import pe.tp1.hdpeta.jalame.Network.RetrofitInstance;
 import pe.tp1.hdpeta.jalame.R;
+import pe.tp1.hdpeta.jalame.Singleton.PersonSingleton;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UserSignUpActivity extends AppCompatActivity {
     static final String BASE_URL = "http://services.tarrillobarba.com.pe:6789/";
@@ -91,13 +91,14 @@ public class UserSignUpActivity extends AppCompatActivity {
 
     }
 
-    private void validateCheckBoxWithPerson(PersonBean personBean) {
+    private void validateCheckBox() {
 
         CleanForm();
 
         if (ckbHaveCar.isChecked()) {
             Bundle bundle = new Bundle();
-            bundle.putInt("codPersona", personBean.getCodPersona());
+            PersonBean person = PersonSingleton.getInstance().getPersonBean();
+            bundle.putInt("codPersona", person.getCodPersona());
 
             Intent driverSignUpIntent = new Intent(this, DriverSignUpActivity.class);
             driverSignUpIntent.putExtras(bundle);
@@ -111,12 +112,7 @@ public class UserSignUpActivity extends AppCompatActivity {
 
     private void saveUserInformation(PersonBean newPerson) {
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        RestClient restClient = retrofit.create(RestClient.class);
+        RestClient restClient = RetrofitInstance.getRetrofitInstance().create(RestClient.class);
         Call<PersonBean> call = restClient.createUser(newPerson);
 
         call.enqueue(new Callback<PersonBean>() {
@@ -124,9 +120,8 @@ public class UserSignUpActivity extends AppCompatActivity {
             public void onResponse(Call<PersonBean> call, Response<PersonBean> response) {
                 switch (response.code()){
                     case 200:
-
-                        PersonBean newPerson = response.body();
-                        validateCheckBoxWithPerson(newPerson);
+                        PersonSingleton.getInstance().setPersonBean(response.body());
+                        validateCheckBox();
                     default:
                         break;
                 }

@@ -1,5 +1,7 @@
 package pe.tp1.hdpeta.jalame.Bean;
 
+import android.content.ContentValues;
+
 import java.util.Date;
 
 public class ServicioBean {
@@ -9,9 +11,9 @@ public class ServicioBean {
     private int codVehiculo;
     private int codTarifa;
     private int codFormaPago;
-    private Date fecRegistro;
-    private Date inicioServ;
-    private Date finServ;
+    private String fecRegistro;
+    private String inicioServ;
+    private String finServ;
     private String origenDes;
     private String origenLat;
     private String origenLon;
@@ -21,9 +23,18 @@ public class ServicioBean {
     private int calificacionUsuario;
     private int calificacionConductor;
     private int calificacionVehiculo;
+    private String commtUsua;
+    private String commtCond;
     private String estadoServ;
+    private double importe;
     private String estadoR;
-    private Date tsupdate;
+    private String tsupdate;
+
+    //Referencias
+    private String usuario;
+    private String conductor;
+    private String vehiculo;
+    private String formaPago;
 
     public ServicioBean(int codServicio,
                         int codConductor,
@@ -31,9 +42,9 @@ public class ServicioBean {
                         int codVehiculo,
                         int codTarifa,
                         int codFormaPago,
-                        Date fecRegistro,
-                        Date inicioServ,
-                        Date finServ,
+                        String fecRegistro,
+                        String inicioServ,
+                        String finServ,
                         String origenDes,
                         String origenLat,
                         String origenLon,
@@ -43,9 +54,16 @@ public class ServicioBean {
                         int calificacionUsuario,
                         int calificacionConductor,
                         int calificacionVehiculo,
+                        String commtUsua,
+                        String commtCond,
                         String estadoServ,
+                        double importe,
                         String estadoR,
-                        Date tsupdate) {
+                        String tsupdate,
+                        String usuario,
+                        String conductor,
+                        String vehiculo,
+                        String formaPago) {
         this.codServicio = codServicio;
         this.codConductor = codConductor;
         this.codUsuario = codUsuario;
@@ -64,9 +82,16 @@ public class ServicioBean {
         this.calificacionUsuario = calificacionUsuario;
         this.calificacionConductor = calificacionConductor;
         this.calificacionVehiculo = calificacionVehiculo;
+        this.commtUsua = commtUsua;
+        this.commtCond = commtCond;
         this.estadoServ = estadoServ;
+        this.importe = importe;
         this.estadoR = estadoR;
         this.tsupdate = tsupdate;
+        this.usuario = usuario;
+        this.conductor = conductor;
+        this.vehiculo = vehiculo;
+        this.formaPago = formaPago;
     }
 
     public int getCodServicio() {
@@ -117,27 +142,27 @@ public class ServicioBean {
         this.codFormaPago = codFormaPago;
     }
 
-    public Date getFecRegistro() {
+    public String getFecRegistro() {
         return fecRegistro;
     }
 
-    public void setFecRegistro(Date fecRegistro) {
+    public void setFecRegistro(String fecRegistro) {
         this.fecRegistro = fecRegistro;
     }
 
-    public Date getInicioServ() {
+    public String getInicioServ() {
         return inicioServ;
     }
 
-    public void setInicioServ(Date inicioServ) {
+    public void setInicioServ(String inicioServ) {
         this.inicioServ = inicioServ;
     }
 
-    public Date getFinServ() {
+    public String getFinServ() {
         return finServ;
     }
 
-    public void setFinServ(Date finServ) {
+    public void setFinServ(String finServ) {
         this.finServ = finServ;
     }
 
@@ -213,12 +238,36 @@ public class ServicioBean {
         this.calificacionVehiculo = calificacionVehiculo;
     }
 
+    public String getCommtUsua() {
+        return commtUsua;
+    }
+
+    public void setCommtUsua(String commtUsua) {
+        this.commtUsua = commtUsua;
+    }
+
+    public String getCommtCond() {
+        return commtCond;
+    }
+
+    public void setCommtCond(String commtCond) {
+        this.commtCond = commtCond;
+    }
+
     public String getEstadoServ() {
         return estadoServ;
     }
 
     public void setEstadoServ(String estadoServ) {
         this.estadoServ = estadoServ;
+    }
+
+    public double getImporte() {
+        return importe;
+    }
+
+    public void setImporte(double importe) {
+        this.importe = importe;
     }
 
     public String getEstadoR() {
@@ -229,11 +278,70 @@ public class ServicioBean {
         this.estadoR = estadoR;
     }
 
-    public Date getTsupdate() {
+    public String getTsupdate() {
         return tsupdate;
     }
 
-    public void setTsupdate(Date tsupdate) {
+    public void setTsupdate(String tsupdate) {
         this.tsupdate = tsupdate;
+    }
+
+    public String getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
+    }
+
+    public String getConductor() {
+        return conductor;
+    }
+
+    public void setConductor(String conductor) {
+        this.conductor = conductor;
+    }
+
+    public String getVehiculo() {
+        return vehiculo;
+    }
+
+    public void setVehiculo(String vehiculo) {
+        this.vehiculo = vehiculo;
+    }
+
+    public String getFormaPago() {
+        return formaPago;
+    }
+
+    public void setFormaPago(String formaPago) {
+        this.formaPago = formaPago;
+    }
+
+    public ContentValues toContentValues(){
+        ContentValues values = new ContentValues();
+        values.put("codServicio", this.codServicio);
+        values.put("codConductor", this.codConductor);
+        values.put("codUsuario", this.codUsuario);
+        values.put("codVehiculo", this.codVehiculo);
+        values.put("codTarifa", this.codTarifa);
+        values.put("codFormaPago", this.codFormaPago);
+        values.put("fecRegistro", this.fecRegistro);
+        values.put("inicioServ", this.inicioServ);
+        values.put("finServ", this.finServ);
+        values.put("origenDes", this.origenDes);
+        values.put("origenLat", this.origenLat);
+        values.put("origenLon", this.origenLon);
+        values.put("destinoDes", this.destinoDes);
+        values.put("destinoLat", this.destinoLat);
+        values.put("destinoLon", this.destinoLon);
+        values.put("calificacionUsuario", this.calificacionUsuario);
+        values.put("calificacionConductor", this.calificacionConductor);
+        values.put("calificacionVehiculo", this.calificacionVehiculo);
+        values.put("commtUsua", this.commtUsua);
+        values.put("conductor", this.conductor);
+        values.put("vehiculo", this.vehiculo);
+        values.put("formaPago", this.formaPago);
+        return values;
     }
 }
