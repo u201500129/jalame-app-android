@@ -10,7 +10,9 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import pe.tp1.hdpeta.jalame.Bean.PersonBean;
 import pe.tp1.hdpeta.jalame.Bean.ServicioBean;
+import pe.tp1.hdpeta.jalame.Bean.VehiculoBean;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -22,6 +24,7 @@ public class DBHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.services = services;
     }
+
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -55,7 +58,124 @@ public class DBHelper extends SQLiteOpenHelper {
                 "vehiculo VARCHAR(120),  " +
                 "formaPago VARCHAR(120)) ");
 
+        db.execSQL("CREATE TABLE IF NOT EXISTS PERSONA (" +
+                "codPersona INTEGER, " +
+                "nombre VARCHAR(120), " +
+                "apellido VARCHAR(120), " +
+                "sexo VARCHAR(120), " +
+                "dni VARCHAR(120), " +
+                "perfil VARCHAR(120), " +
+                "carrera VARCHAR(120), " +
+                "correo VARCHAR(120), " +
+                "telefono VARCHAR(120), " +
+                "calificacion INTEGER, " +
+                "clave VARCHAR(120), " +
+                "estadoR VARCHAR(120)) ");
 
+        db.execSQL("CREATE TABLE IF NOT EXISTS VEHICULO (" +
+                "codVehiculo INTEGER, " +
+                "codPersona INTEGER, " +
+                "polizaSoat VARCHAR(120), " +
+                "marca VARCHAR(120), " +
+                "modelo VARCHAR(120), " +
+                "aFabrica VARCHAR(120), " +
+                "matricula VARCHAR(120), " +
+                "color VARCHAR(120), " +
+                "asientosTotal INTEGER, " +
+                "asientosDisp INTEGER, " +
+                "latitud VARCHAR(120), " +
+                "longitud VARCHAR(120), " +
+                "visible VARCHAR(120), " +
+                "calificacion INTEGER, " +
+                "estadoR VARCHAR(120), " +
+                "tsupdate VARCHAR(120), " +
+                "distancia INTEGER) ");
+
+    }
+
+    public VehiculoBean vehiculoBean(){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.query("VEHICULO",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        return new VehiculoBean(c.getInt(0),
+                c.getInt(1),
+                c.getString(2),
+                c.getString(3),
+                c.getString(4),
+                c.getString(5),
+                c.getString(6),
+                c.getString(7),
+                c.getInt(8),
+                c.getInt(9),
+                c.getString(10),
+                c.getString(11),
+                c.getString(12),
+                c.getInt(13),
+                c.getString(14),
+                c.getString(15),
+                c.getInt(16));
+    }
+
+    public PersonBean personBean(){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.query("PERSONA",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+
+        List<PersonBean> personBeans = new ArrayList<>();
+        while (c.moveToNext()){
+            personBeans.add(new PersonBean(c.getInt(0),
+                    c.getString(1),
+                    c.getString(2),
+                    c.getString(3),
+                    c.getString(4),
+                    c.getString(5),
+                    c.getString(6),
+                    c.getString(7),
+                    c.getString(8),
+                    c.getInt(9),
+                    c.getString(10),
+                    c.getString(11))
+            );
+        }
+
+        if (personBeans.size() > 0) {
+            return personBeans.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    public void saveVehiculo(VehiculoBean vehiculoBean){
+        SQLiteDatabase db = getWritableDatabase();
+        db.insert("VEHICULO", null, vehiculoBean.toContentValues());
+    }
+    public void savePerson(PersonBean personBean){
+        SQLiteDatabase db = getWritableDatabase();
+        db.insert("PERSONA",null, personBean.toContentValues());
+    }
+
+    public void updatePerson(PersonBean personBean){
+        SQLiteDatabase db = getWritableDatabase();
+        db.update("PERSONA", personBean.toContentValues(), "codPersona=?", new String[]{String.valueOf(personBean.getCodPersona())});
+    }
+
+    public int deletePerson(String codPersona){
+        return getWritableDatabase().delete("PERSONA","codPersona=?",new String[]{codPersona});
+    }
+
+    public int deleteVehiculo(String codVehiculo){
+        return getWritableDatabase().delete("VEHICULO","codVehiculo=?", new String[]{codVehiculo});
     }
 
     public List<ServicioBean> getAllServices(){
@@ -118,4 +238,5 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }
+
 }

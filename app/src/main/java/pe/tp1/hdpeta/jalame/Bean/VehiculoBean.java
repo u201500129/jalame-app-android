@@ -1,6 +1,6 @@
 package pe.tp1.hdpeta.jalame.Bean;
 
-import java.util.Date;
+import android.content.ContentValues;
 
 public class VehiculoBean {
     private int codVehiculo;
@@ -18,7 +18,7 @@ public class VehiculoBean {
     private String visible;
     private int calificacion;
     private String estadoR;
-    private Date tsupdate;
+    private String tsupdate;
     private int distancia;
 
     public VehiculoBean(int codVehiculo,
@@ -36,7 +36,7 @@ public class VehiculoBean {
                         String visible,
                         int calificacion,
                         String estadoR,
-                        Date tsupdate,
+                        String tsupdate,
                         int distancia) {
         this.codVehiculo = codVehiculo;
         this.codPersona = codPersona;
@@ -177,11 +177,11 @@ public class VehiculoBean {
         this.estadoR = estadoR;
     }
 
-    public Date getTsupdate() {
+    public String getTsupdate() {
         return tsupdate;
     }
 
-    public void setTsupdate(Date tsupdate) {
+    public void setTsupdate(String tsupdate) {
         this.tsupdate = tsupdate;
     }
 
@@ -191,5 +191,27 @@ public class VehiculoBean {
 
     public void setDistancia(int distancia) {
         this.distancia = distancia;
+    }
+
+    public ContentValues toContentValues(){
+        ContentValues values = new ContentValues();
+        values.put("codVehiculo", this.codVehiculo);
+        values.put("codPersona", this.codPersona);
+        values.put("polizaSoat", this.polizaSoat);
+        values.put("marca", this.marca);
+        values.put("modelo", this.modelo);
+        values.put("aFabrica", this.aFabrica);
+        values.put("matricula", this.matricula);
+        values.put("color", this.color);
+        values.put("asientosTotal", this.asientosTotal);
+        values.put("asientosDisp", this.asientosDisp);
+        values.put("latitud", this.latitud);
+        values.put("longitud", this.longitud);
+        values.put("visible", this.visible);
+        values.put("calificacion", this.calificacion);
+        values.put("estadoR", this.estadoR);
+        values.put("tsupdate", this.tsupdate);
+        values.put("distancia", this.distancia);
+        return values;
     }
 }

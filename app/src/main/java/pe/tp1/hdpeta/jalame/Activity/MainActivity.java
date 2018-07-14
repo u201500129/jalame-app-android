@@ -65,8 +65,7 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        txtUserName = (TextView) findViewById(R.id.txtUserName);
-        txtUserEmail = (TextView) findViewById(R.id.txtUserEmail);
+
         View headerLayout = navigationView.getHeaderView(0);
 
         headerLayout.setOnClickListener(new View.OnClickListener() {
@@ -82,14 +81,18 @@ public class MainActivity extends AppCompatActivity
         txtUserEmail = (TextView) headerLayout.findViewById(R.id.txtUserEmail);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //fragmentManager.beginTransaction().replace(R.id.container, new MapFragment()).commit();
+        fragmentManager.beginTransaction().replace(R.id.container, new MapFragment()).commit();
 
         DBHelper db = new DBHelper(this);
-        /*PersonBean personBean = db.personBean();
 
-        txtUserName.setText(personBean.getNombre());
-        txtUserEmail.setText(personBean.getCorreo());
-        */
+        PersonBean personBean = db.personBean();
+
+        if (personBean != null){
+            txtUserName.setText(personBean.getNombre());
+            txtUserEmail.setText(personBean.getCorreo());
+        }
+
+
     }
 
     @Override
