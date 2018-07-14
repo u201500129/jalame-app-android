@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="20dp"
-    tools:context=".UserRegisterActivity">
+    tools:context=".Activity.UserSignUpActivity">
 
     <EditText
         android:layout_width="match_parent"
@@ -55,11 +55,18 @@
         android:inputType="textPassword"
         android:id="@+id/txtConfirmPassword"/>
 
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tengo_auto_propio"
+        android:id="@+id/ckbHaveCar"/>
+
     <Button
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
+        android:layout_gravity="end"
         android:id="@+id/btnRegister"
         android:text="@string/registrar"/>
+
 
 </LinearLayout>
