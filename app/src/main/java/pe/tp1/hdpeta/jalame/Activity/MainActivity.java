@@ -148,18 +148,15 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
-            needCheck=false;
+            needCheck = false;
         } else if (id == R.id.nav_calificar) {
-            needCheck=false;
+            needCheck = false;
         } else if (id == R.id.nav_logout) {
-            needCheck=false;
-            Intent loginActivity = new Intent(this, LoginActivity.class);
-            startActivity(loginActivity);
-            finish();
-
+            needCheck = false;
+            logoutUser();
         }
 
-        if ( fragment != null){
+        if (fragment != null) {
             // Parameters to Fragment
             //SampleFragment fragment = new SampleFragment();
             //Bundle args = new Bundle();
@@ -173,7 +170,7 @@ public class MainActivity extends AppCompatActivity
             FragmentTransaction transaction = fragmentManager.beginTransaction();
 
             //Paso 3: Añadir/Remplazar el nuevo fragmento creado al Activity
-            transaction.replace(R.id.container , fragment);
+            transaction.replace(R.id.container, fragment);
             //transaction.add(R.id.content_main, fragment);
 
             transaction.addToBackStack(null);
@@ -190,6 +187,15 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().setTitle(item.getTitle());
 
         return true;
-
     }
+
+
+    private void logoutUser() {
+        this.deleteDatabase("Jalame.bd");
+        Intent loginActivity = new Intent(this, LoginActivity.class);
+        startActivity(loginActivity);
+        finish();
+    }
+
+
 }

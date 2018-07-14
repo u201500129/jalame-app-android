@@ -49,7 +49,7 @@ public class ProfileFragment extends Fragment {
         getActivity().setTitle("Mi Perfil");
 
         DBHelper db = new DBHelper(getContext());
-        //currentPerson = db.personBean();
+        currentPerson = db.personBean();
 
         txtName = (EditText) rootView.findViewById(R.id.txtName);
         txtLastName = (EditText) rootView.findViewById(R.id.txtLastName);
@@ -140,7 +140,7 @@ public class ProfileFragment extends Fragment {
 
     private void userUpdated(PersonBean updatedPerson) {
         DBHelper db = new DBHelper(getContext());
-        //db.savePerson(updatedPerson);
+        db.savePerson(updatedPerson);
         Toast.makeText(getContext(), "Usuario actualizado correctamente", Toast.LENGTH_SHORT).show();
     }
 
