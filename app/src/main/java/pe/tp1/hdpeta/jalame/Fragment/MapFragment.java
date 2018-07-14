@@ -51,6 +51,7 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.util.Date;
 
+import pe.tp1.hdpeta.jalame.Network.HttpUrlHandler;
 import pe.tp1.hdpeta.jalame.R;
 import pe.tp1.hdpeta.jalame.Singleton.PersonSingleton;
 
@@ -109,7 +110,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
             if (mMap != null & mLastLocation != null) {
 
-                latLngUser = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
+                //latLngUser = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngUser, DEFAULT_ZOOM));
 
                 //Personalizacion Inicial
@@ -117,6 +118,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
                 mMap.getUiSettings().setMapToolbarEnabled(false);
                 mMap.getUiSettings().setCompassEnabled(false);
+
+                //mMap.setOnMarkerClickListener(this);
+
+                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+                        System.out.println("CLICK");
+                        System.out.println("CLICK: " + marker.getTag() + " | " + marker.getTitle());
+                        Toast.makeText(getParentFragment().getActivity(), marker.getTag() + " | " + marker.getTitle(),Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                });
+
                 //mMap.setLocationSource();
 
             } else {
@@ -130,7 +144,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         // Add user marker
 
         if (mLastLocation != null){
-            latLngUser = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
+            //latLngUser = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
         }else{
             return;
         }
@@ -295,78 +309,40 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
 
 
-
-
-
-    private  void  listaVehiculos(){
+    private  void listaVehiculos(){
+        //temp
         String idUser = "1" ;
-        String restURL = "http://services.tarrillobarba.com.pe:6789/jalame/vehiculo/list/" + idUser +
-                         "/" + latLngUser.latitude + "/" + latLngUser.longitude;
 
-        String resultado = "";
+        String path =  "vehiculo/list/" + idUser +"/" +  latLngUser.latitude + "/" + latLngUser.longitude;
+        HttpUrlHandler httpRest = new HttpUrlHandler("GET", path);
 
-        try {
-            URL restServiceURL = new URL(restURL);
+        String jsonString ;
 
-            HttpURLConnection httpConnection = (HttpURLConnection) restServiceURL.openConnection();
-            httpConnection.setRequestMethod("GET");
+        if (httpRest.readREST()){
+            jsonString = httpRest.getJsonString();
 
-            httpConnection.setRequestProperty("Accept", "application/json");
-
-            if (httpConnection.getResponseCode() == 200) {
-                BufferedReader responseBuffer = new BufferedReader(new InputStreamReader((httpConnection.getInputStream())));
-                resultado = responseBuffer.readLine();
-            }else {
-                Log.w("RESTfull", "ERROR: " + "HTTP GET: " + httpConnection.getResponseCode());
-            }
-
-            //Log.w("RESTfull", "DATO: " + resultado);
-            httpConnection.disconnect();
-        } catch (MalformedURLException e) {
-            Log.w("RESTfull", "ERROR: " + "HTTP URL: " + e.getMessage());
-            e.printStackTrace();
-        } catch (IOException e) {
-            Log.w("RESTfull", "ERROR: " + "HTTP IOE: " + e.getMessage());
-            e.printStackTrace();
-        }
-
-
-        if (resultado != null) {
-            if (resultado.length() > 10) {
+            if (jsonString.length() > 10) {
                 try {
                     //Creando Objeto JSON
-                    JSONObject joVehiculoAll = new JSONObject(resultado);
+                    JSONObject joVehiculoAll = new JSONObject(jsonString);
                     JSONArray joVehiculoArray = (JSONArray) joVehiculoAll.get("vehiculo");
                     int item = 0;
 
                     while (item < joVehiculoArray.length()){
                         JSONObject joVehiculo = joVehiculoArray.getJSONObject(item);
-                        // = joVehiculo.getInt("codVehiculo")
-                        // = joVehiculo.getInt("codPersona")
-                        // = joVehiculo.getString("polizaSoat")
 
-                        createMarker(joVehiculo.getString("latitud"),
-                                joVehiculo.getString("longitud"),
-                                joVehiculo.getString("matricula"),
-                                joVehiculo.getString("marca") + " "+
-                                joVehiculo.getString("modelo") + " "+
-                                joVehiculo.getString("aFabrica"));
-
-
-                        // = joVehiculo.getString("color")
-                        // = joVehiculo.getInt("asientosTotal")
-                        // = joVehiculo.getInt("asientosDisp")
-
-                        // = joVehiculo.getString("visible")
-                        // = joVehiculo.getInt("calificacion")
-                        // = joVehiculo.getString("estadoR")
-                        // = joVehiculo.getDate("tsupdate")
-                        // = joVehiculo.getInt("distancia")
+                        createMarker( joVehiculo.getInt("codVehiculo"),
+                                     joVehiculo.getString("latitud"),
+                                     joVehiculo.getString("longitud"),
+                                joVehiculo.getInt("calificacion") + "E | " +
+                                        joVehiculo.getString("matricula"),
+                                joVehiculo.getString("marca") + " " +
+                                        joVehiculo.getString("modelo") + " " +
+                                        joVehiculo.getString("aFabrica"));
 
                         item ++;
                         Log.w("JALAME", "INFO: " + joVehiculo.toString());
                     }
-
 
                 } catch (JSONException e) {
                     Log.w("JALAME", "ERROR: JSON " + e.getMessage());
@@ -377,20 +353,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
-    private void createMarker(String lat, String lng, String titulo, String descripcion){
+
+    private void createMarker(int id, String lat, String lng, String titulo, String descripcion){
         // Add a markers
+        Marker nMarker;
         try{
 
-            MarkerOptions marker = new MarkerOptions().position(new LatLng(Double.parseDouble(lat), Double.parseDouble(lng)));
-            marker.title(titulo);
-            marker.snippet(descripcion);
-
+            MarkerOptions mOptions = new MarkerOptions().position(new LatLng(Double.parseDouble(lat), Double.parseDouble(lng)));
+            mOptions.title(titulo);
+            mOptions.snippet(descripcion);
             // Changing marker icon
             //marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
-            marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.jcar));
+            mOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.jcar));
             // adding marker
             if (mMap != null) {
-                mMap.addMarker(marker);
+                nMarker = mMap.addMarker(mOptions);
+                nMarker.setTag(id);
             }
         }catch (SecurityException e){
             System.out.println("Marker Error: " + e.getMessage());
