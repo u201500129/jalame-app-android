@@ -50,6 +50,7 @@ public class ServiciosFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_servicios, container, false);
 
+        getActivity().setTitle("Mis Viajes");
         recyclerView = (RecyclerView) rootView.findViewById(R.id.servicesRecyclerView);
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);

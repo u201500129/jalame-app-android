@@ -45,9 +45,7 @@ public class NearDriversFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_near_drivers, container, false);
 
-        /*recyclerView = (RecyclerView) rootView.findViewById(R.id.servicesRecyclerView);
-        layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);*/
+        getActivity().setTitle("Conductores cercanos");
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.nearDriversRecyclerView);
         layoutManager = new LinearLayoutManager(getContext());

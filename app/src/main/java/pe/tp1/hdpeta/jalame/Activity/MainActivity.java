@@ -20,6 +20,7 @@ import android.widget.TextView;
 import pe.tp1.hdpeta.jalame.Bean.PersonBean;
 import pe.tp1.hdpeta.jalame.DataBase.DBHelper;
 import pe.tp1.hdpeta.jalame.Fragment.MapFragment;
+import pe.tp1.hdpeta.jalame.Fragment.ProfileFragment;
 import pe.tp1.hdpeta.jalame.Fragment.ServiciosFragment;
 import pe.tp1.hdpeta.jalame.Fragment.NearDriversFragment;
 import pe.tp1.hdpeta.jalame.R;
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        final FragmentManager fragmentManager = getSupportFragmentManager();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -53,11 +54,19 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerLayout = navigationView.getHeaderView(0);
+        headerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentManager.beginTransaction().replace(R.id.container, new ProfileFragment()).commit();
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        });
+
 
         txtUserName = (TextView) headerLayout.findViewById(R.id.txtUserName);
         txtUserEmail = (TextView) headerLayout.findViewById(R.id.txtUserEmail);
         navigationView.setNavigationItemSelectedListener(this);
-        FragmentManager fragmentManager = getSupportFragmentManager();
+
         fragmentManager.beginTransaction().replace(R.id.container, new MapFragment()).commit();
 
         DBHelper db = new DBHelper(this);

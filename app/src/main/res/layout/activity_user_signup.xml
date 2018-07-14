@@ -26,6 +26,14 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="@string/ingrese_su_dni"
+        android:inputType="number"
+        android:layout_marginBottom="5dp"
+        android:id="@+id/txtDNI"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:hint="@string/ingrese_su_email"
         android:inputType="textEmailAddress"
         android:layout_marginBottom="5dp"
