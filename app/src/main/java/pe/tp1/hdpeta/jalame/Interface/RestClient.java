@@ -10,6 +10,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface RestClient {
@@ -18,7 +19,7 @@ public interface RestClient {
     Call<ServiceList> services(@Path("userId") int userId);
 
     @GET("jalame/vehiculo/list/{userId}/{latitud}/{longitud}/")
-    Call<List<VehiculoBean>> nearDrivers(
+    Call<NearDriverList> nearDrivers(
             @Path("userId") int userId,
             @Path("latitud") String latitude,
             @Path("longitud") String longitud);
@@ -35,5 +36,7 @@ public interface RestClient {
     @POST("/jalame/vehiculo/add")
     Call<VehiculoBean> createCar(@Body VehiculoBean vehiculoBean);
 
+    @PUT("/jalame/person/update")
+    Call<PersonBean> updateUser(@Body PersonBean personBean);
 
 }

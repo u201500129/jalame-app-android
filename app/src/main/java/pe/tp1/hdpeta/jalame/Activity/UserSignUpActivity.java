@@ -13,6 +13,7 @@ import android.widget.Toast;
 import java.util.HashMap;
 
 import pe.tp1.hdpeta.jalame.Bean.PersonBean;
+import pe.tp1.hdpeta.jalame.DataBase.DBHelper;
 import pe.tp1.hdpeta.jalame.Interface.RestClient;
 import pe.tp1.hdpeta.jalame.Network.RetrofitInstance;
 import pe.tp1.hdpeta.jalame.R;
@@ -29,6 +30,7 @@ public class UserSignUpActivity extends AppCompatActivity {
     private EditText txtPhone;
     private EditText txtPassword;
     private EditText txtConfirmPassword;
+    private EditText txtDNI;
     private CheckBox ckbHaveCar;
     private Button btnRegister;
 
@@ -44,6 +46,7 @@ public class UserSignUpActivity extends AppCompatActivity {
         txtLastName = (EditText) findViewById(R.id.txtLastName);
         txtEmail = (EditText) findViewById(R.id.txtEmail);
         txtPhone = (EditText) findViewById(R.id.txtPhone);
+        txtDNI = (EditText) findViewById(R.id.txtDNI);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
         txtConfirmPassword = (EditText) findViewById(R.id.txtConfirmPassword);
         btnRegister = (Button) findViewById(R.id.btnRegister);
@@ -74,6 +77,7 @@ public class UserSignUpActivity extends AppCompatActivity {
         }
 
         PersonBean newPerson = new PersonBean();
+        newPerson.setCodPersona(0);
         newPerson.setNombre(txtName.getText().toString());
         newPerson.setApellido(txtLastName.getText().toString());
         newPerson.setClave(txtPassword.getText().toString());
@@ -81,27 +85,29 @@ public class UserSignUpActivity extends AppCompatActivity {
         newPerson.setTelefono(txtPhone.getText().toString());
         newPerson.setCalificacion(0);
         newPerson.setCarrera("");
-        newPerson.setCodPersona(0);
-        newPerson.setDni("");
+        newPerson.setDni(txtDNI.getText().toString());
         newPerson.setEstadoR("");
-        newPerson.setPerfil("");
+        if (ckbHaveCar.isChecked()){
+            newPerson.setPerfil("C");
+        }else {
+            newPerson.setPerfil("U");
+        }
+
         newPerson.setSexo("");
 
         saveUserInformation(newPerson);
 
     }
 
-    private void validateCheckBox() {
+    private void validateCheckBoxWithPersonBean(PersonBean personBean) {
 
         CleanForm();
 
-        if (ckbHaveCar.isChecked()) {
-            Bundle bundle = new Bundle();
-            PersonBean person = PersonSingleton.getInstance().getPersonBean();
-            bundle.putInt("codPersona", person.getCodPersona());
+        DBHelper bd = new DBHelper(this);
+        bd.savePerson(personBean);
 
+        if (ckbHaveCar.isChecked()) {
             Intent driverSignUpIntent = new Intent(this, DriverSignUpActivity.class);
-            driverSignUpIntent.putExtras(bundle);
             startActivity(driverSignUpIntent);
         } else {
             openMainActivity();
@@ -120,8 +126,7 @@ public class UserSignUpActivity extends AppCompatActivity {
             public void onResponse(Call<PersonBean> call, Response<PersonBean> response) {
                 switch (response.code()){
                     case 200:
-                        PersonSingleton.getInstance().setPersonBean(response.body());
-                        validateCheckBox();
+                        validateCheckBoxWithPersonBean(response.body());
                     default:
                         break;
                 }

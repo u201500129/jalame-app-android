@@ -1,5 +1,6 @@
 package pe.tp1.hdpeta.jalame.Fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,8 +19,10 @@ import java.util.List;
 
 import pe.tp1.hdpeta.jalame.Activity.LoginActivity;
 import pe.tp1.hdpeta.jalame.Adapter.ServicesAdapter;
+import pe.tp1.hdpeta.jalame.Bean.PersonBean;
 import pe.tp1.hdpeta.jalame.Bean.ServicioBean;
 import pe.tp1.hdpeta.jalame.Bean.VehiculoBean;
+import pe.tp1.hdpeta.jalame.DataBase.DBHelper;
 import pe.tp1.hdpeta.jalame.Interface.RestClient;
 import pe.tp1.hdpeta.jalame.Interface.ServiceList;
 import pe.tp1.hdpeta.jalame.Network.RetrofitInstance;
@@ -37,8 +40,9 @@ public class ServiciosFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private List<ServicioBean> services = new ArrayList<>();
-    private RecyclerView.Adapter adapter;
+    private ServicesAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
+    ProgressDialog progressDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,12 +50,11 @@ public class ServiciosFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_servicios, container, false);
 
+        getActivity().setTitle("Mis Viajes");
         recyclerView = (RecyclerView) rootView.findViewById(R.id.servicesRecyclerView);
-        layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new ServicesAdapter(services);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        progressDialog = ProgressDialog.show(getContext(),"Cargando servicios", "Porfavor espere..");
         FillServices();
 
         return rootView;
@@ -60,19 +63,22 @@ public class ServiciosFragment extends Fragment {
     public void FillServices(){
 
         RestClient restClient = RetrofitInstance.getRetrofitInstance().create(RestClient.class);
-
-        Call<ServiceList> call = restClient.services(1);
+        DBHelper db = new DBHelper(getContext());
+        PersonBean personBean = db.personBean();
+        Call<ServiceList> call = restClient.services(personBean.getCodPersona());
 
         Log.d("URL Called", call.request().url() + "");
 
         call.enqueue(new Callback<ServiceList>() {
             @Override
             public void onResponse(Call<ServiceList> call, Response<ServiceList> response) {
+                progressDialog.dismiss();
                 generateServiceList(response.body().getServiceArrayList());
             }
 
             @Override
             public void onFailure(Call<ServiceList> call, Throwable t) {
+                progressDialog.dismiss();
                 Log.d("Error", t.getMessage());
             }
         });
@@ -80,9 +86,8 @@ public class ServiciosFragment extends Fragment {
     }
 
     private void generateServiceList(ArrayList<ServicioBean> serviceArrayList) {
-        Log.d("Nombre: ", serviceArrayList.get(0).getUsuario());
         adapter = new ServicesAdapter(serviceArrayList);
-        adapter.notifyDataSetChanged();
+        recyclerView.setAdapter(adapter);
     }
 
 
