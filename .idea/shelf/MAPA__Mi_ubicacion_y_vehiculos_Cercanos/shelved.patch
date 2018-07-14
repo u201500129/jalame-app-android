@@ -1,0 +1,641 @@
+Index: app/src/main/java/pe/tp1/hdpeta/jalame/Activity/DriverSignUpActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package pe.tp1.hdpeta.jalame.Activity;\n\nimport android.content.Intent;\nimport android.support.v7.app.AppCompatActivity;\nimport android.os.Bundle;\nimport android.util.Log;\nimport android.view.View;\nimport android.widget.ArrayAdapter;\nimport android.widget.Button;\nimport android.widget.EditText;\nimport android.widget.Spinner;\nimport android.widget.Toast;\n\nimport java.util.ArrayList;\nimport java.util.Date;\nimport java.util.List;\n\nimport pe.tp1.hdpeta.jalame.Bean.PersonBean;\nimport pe.tp1.hdpeta.jalame.Bean.VehiculoBean;\nimport pe.tp1.hdpeta.jalame.Interface.RestClient;\nimport pe.tp1.hdpeta.jalame.R;\nimport pe.tp1.hdpeta.jalame.Singleton.VehiculoSingleton;\nimport retrofit2.Call;\nimport retrofit2.Callback;\nimport retrofit2.Response;\nimport retrofit2.Retrofit;\nimport retrofit2.converter.gson.GsonConverterFactory;\n\npublic class DriverSignUpActivity extends AppCompatActivity {\n\n    static final String BASE_URL = \"http://services.tarrillobarba.com.pe:6789/\";\n    private EditText txtCarBrand;\n    private EditText txtCarModel;\n    private EditText txtCarColor;\n    private EditText txtNumberSits;\n    private Spinner spnDriverState;\n    private Button btnSave;\n\n    List<String> spnStateArray;\n    List<String> spnStateValuesArray;\n    @Override\n    protected void onCreate(Bundle savedInstanceState) {\n        super.onCreate(savedInstanceState);\n        setContentView(R.layout.activity_driver_sign_up);\n\n        txtCarBrand = (EditText) findViewById(R.id.txtCarBrand);\n        txtCarModel = (EditText) findViewById(R.id.txtCarModel);\n        txtCarColor = (EditText) findViewById(R.id.txtCarColor);\n        txtNumberSits = (EditText) findViewById(R.id.txtNumberSits);\n        spnDriverState = (Spinner) findViewById(R.id.spnDriverState);\n        btnSave = (Button) findViewById(R.id.btnSave);\n\n        btnSave.setOnClickListener(new View.OnClickListener() {\n            @Override\n            public void onClick(View v) {\n                saveDriverInfo();\n            }\n        });\n\n        spnStateArray = new ArrayList<>();\n        spnStateArray.add(\"Activo\");\n        spnStateArray.add(\"Inactivo\");\n\n        spnStateValuesArray = new ArrayList<>();\n        spnStateValuesArray.add(\"A\");\n        spnStateValuesArray.add(\"I\");\n\n        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spnStateArray);\n        spnDriverState.setAdapter(dataAdapter);\n\n    }\n\n\n    private void saveDriverInfo() {\n\n        if (txtCarBrand.getText().toString().isEmpty()) {\n            Toast.makeText(this, \"Ingrese la marca del vehículo\", Toast.LENGTH_SHORT).show();\n            return;\n        }\n        if (txtCarColor.getText().toString().isEmpty()) {\n            Toast.makeText(this, \"Ingrese el color del vehículo\", Toast.LENGTH_SHORT).show();\n            return;\n        }\n\n        if (txtNumberSits.getText().toString().isEmpty()) {\n            Toast.makeText(this, \"Ingrese la cantidad de asientos disponibles de su vehículo\", Toast.LENGTH_SHORT).show();\n            return;\n        }\n\n\n        VehiculoBean newCar = new VehiculoBean(0,\n                getIntent().getExtras().getInt(\"codPersona\"),\n                \"\",\n                txtCarBrand.getText().toString(),\n                txtCarModel.getText().toString(),\n                \"\",\n                \"\",\n                txtCarColor.getText().toString(),\n                Integer.valueOf(txtNumberSits.getText().toString()),\n                0,\n                \"\",\n                \"\",\n                \"\",\n                0,\n                spnStateValuesArray.get(spnDriverState.getSelectedItemPosition()),\n                new Date(),\n                0\n                );\n        Retrofit retrofit = new Retrofit.Builder()\n                .baseUrl(BASE_URL)\n                .addConverterFactory(GsonConverterFactory.create())\n                .build();\n\n        RestClient restClient = retrofit.create(RestClient.class);\n        Call<VehiculoBean> call = restClient.createCar(newCar);\n\n        call.enqueue(new Callback<VehiculoBean>() {\n            @Override\n            public void onResponse(Call<VehiculoBean> call, Response<VehiculoBean> response) {\n                switch (response.code()){\n                    case 200:\n\n                        VehiculoSingleton.getInstance().setVehiculoBean(response.body());\n                        openMainActivity();\n\n                    default:\n                        break;\n                }\n            }\n\n            @Override\n            public void onFailure(Call<VehiculoBean> call, Throwable t) {\n\n            }\n        });\n\n    }\n    private void openMainActivity() {\n        Intent mainActivity = new Intent(this, MainActivity.class);\n        startActivity(mainActivity);\n        finish();\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/pe/tp1/hdpeta/jalame/Activity/DriverSignUpActivity.java	(date 1531555782000)
++++ app/src/main/java/pe/tp1/hdpeta/jalame/Activity/DriverSignUpActivity.java	(date 1531556155502)
+@@ -17,7 +17,9 @@
+ 
+ import pe.tp1.hdpeta.jalame.Bean.PersonBean;
+ import pe.tp1.hdpeta.jalame.Bean.VehiculoBean;
++import pe.tp1.hdpeta.jalame.DataBase.DBHelper;
+ import pe.tp1.hdpeta.jalame.Interface.RestClient;
++import pe.tp1.hdpeta.jalame.Network.RetrofitInstance;
+ import pe.tp1.hdpeta.jalame.R;
+ import pe.tp1.hdpeta.jalame.Singleton.VehiculoSingleton;
+ import retrofit2.Call;
+@@ -86,10 +88,12 @@
+             Toast.makeText(this, "Ingrese la cantidad de asientos disponibles de su vehículo", Toast.LENGTH_SHORT).show();
+             return;
+         }
++        DBHelper db = new DBHelper(this);
++        PersonBean personBean = db.personBean();
+ 
+ 
+         VehiculoBean newCar = new VehiculoBean(0,
+-                getIntent().getExtras().getInt("codPersona"),
++                personBean.getCodPersona(),
+                 "",
+                 txtCarBrand.getText().toString(),
+                 txtCarModel.getText().toString(),
+@@ -103,39 +107,30 @@
+                 "",
+                 0,
+                 spnStateValuesArray.get(spnDriverState.getSelectedItemPosition()),
+-                new Date(),
++                "",
+                 0
+                 );
+-        Retrofit retrofit = new Retrofit.Builder()
+-                .baseUrl(BASE_URL)
+-                .addConverterFactory(GsonConverterFactory.create())
+-                .build();
+ 
+-        RestClient restClient = retrofit.create(RestClient.class);
++        RestClient restClient = RetrofitInstance.getRetrofitInstance().create(RestClient.class);
+         Call<VehiculoBean> call = restClient.createCar(newCar);
+ 
+         call.enqueue(new Callback<VehiculoBean>() {
+             @Override
+             public void onResponse(Call<VehiculoBean> call, Response<VehiculoBean> response) {
+-                switch (response.code()){
+-                    case 200:
+-
+-                        VehiculoSingleton.getInstance().setVehiculoBean(response.body());
+-                        openMainActivity();
+-
+-                    default:
+-                        break;
+-                }
++                openMainActivityWithVehiculoBean(response.body());
+             }
+ 
+             @Override
+             public void onFailure(Call<VehiculoBean> call, Throwable t) {
+-
++                Log.d("Error:", t.getMessage());
+             }
+         });
+ 
+     }
+-    private void openMainActivity() {
++    private void openMainActivityWithVehiculoBean(VehiculoBean vehiculoBean) {
++        DBHelper db = new DBHelper(this);
++        db.saveVehiculo(vehiculoBean);
++
+         Intent mainActivity = new Intent(this, MainActivity.class);
+         startActivity(mainActivity);
+         finish();
+Index: app/src/main/java/pe/tp1/hdpeta/jalame/Activity/LoginActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package pe.tp1.hdpeta.jalame.Activity;\n\nimport android.app.ProgressDialog;\nimport android.content.Intent;\nimport android.support.v7.app.AppCompatActivity;\nimport android.os.Bundle;\nimport android.util.Log;\nimport android.view.View;\nimport android.widget.Button;\nimport android.widget.EditText;\nimport android.widget.TextView;\nimport android.widget.Toast;\n\nimport com.google.gson.FieldNamingPolicy;\nimport com.google.gson.Gson;\nimport com.google.gson.GsonBuilder;\n\nimport pe.tp1.hdpeta.jalame.Bean.PersonBean;\nimport pe.tp1.hdpeta.jalame.Interface.RestClient;\nimport pe.tp1.hdpeta.jalame.Interface.ServiceList;\nimport pe.tp1.hdpeta.jalame.Network.RetrofitInstance;\nimport pe.tp1.hdpeta.jalame.R;\nimport pe.tp1.hdpeta.jalame.Singleton.PersonSingleton;\nimport retrofit2.Call;\nimport retrofit2.Callback;\nimport retrofit2.Response;\nimport retrofit2.Retrofit;\nimport retrofit2.converter.gson.GsonConverterFactory;\n\npublic class LoginActivity extends AppCompatActivity {\n\n    static final String BASE_URL = \"http://services.tarrillobarba.com.pe:6789/\";\n\n    private EditText emailEditText;\n    private EditText passwordEditText;\n    private Button ingresarButton;\n    private TextView lblNoAccount;\n    private TextView lblDriverSignUp;\n    ProgressDialog progressDialog;\n\n    @Override\n    protected void onCreate(Bundle savedInstanceState) {\n        super.onCreate(savedInstanceState);\n        setContentView(R.layout.activity_login);\n\n        emailEditText = (EditText) findViewById(R.id.emailEditText);\n        passwordEditText = (EditText) findViewById(R.id.passwordEditText);\n        ingresarButton = (Button) findViewById(R.id.ingresarButton);\n        lblNoAccount = (TextView) findViewById(R.id.lblNoAccount);\n\n        lblNoAccount.setOnClickListener(new View.OnClickListener() {\n            @Override\n            public void onClick(View v) {\n                OpenUserSignUpActivity();\n            }\n        });\n\n        ingresarButton.setOnClickListener(new View.OnClickListener() {\n            @Override\n            public void onClick(View v) {\n                validateInput();\n            }\n        });\n\n    }\n\n\n    private void OpenUserSignUpActivity() {\n        Intent userRegisterActivity = new Intent(this, UserSignUpActivity.class);\n        startActivity(userRegisterActivity);\n    }\n\n    private void validateInput() {\n        if (emailEditText.getText().toString().isEmpty()) {\n            Toast.makeText(this, \"Inserse su email\", Toast.LENGTH_SHORT).show();\n            return;\n        }\n        if (passwordEditText.getText().toString().isEmpty()) {\n            Toast.makeText(this, \"Inserse su password\", Toast.LENGTH_SHORT).show();\n            return;\n        }\n\n        progressDialog = ProgressDialog.show(this,\"Iniciando Sesión\", \"Porfavor espere..\");\n        callLogin(emailEditText.getText().toString(), passwordEditText.getText().toString());\n    }\n\n    private void callLogin(String userEmail, String password) {\n\n        RestClient restClient = RetrofitInstance.getRetrofitInstance().create(RestClient.class);\n\n        Call<PersonBean> call = restClient.credentials(userEmail,password);\n\n        call.enqueue(new Callback<PersonBean>() {\n            @Override\n            public void onResponse(Call<PersonBean> call, Response<PersonBean> response) {\n                \n                progressDialog.dismiss();\n                switch (response.code()) {\n                    case 200:\n                        PersonSingleton.getInstance().setPersonBean(response.body());\n                        openMainActivity();\n                        break;\n                    case 404:\n                        Log.d(\"Error message \", response.raw().toString());\n                        Toast.makeText(LoginActivity.this, \"Error: Usuario o Clave Incorrecto\", Toast.LENGTH_SHORT).show();\n                        break;\n                    default:\n                        break;\n                }\n            }\n\n            @Override\n            public void onFailure(Call<PersonBean> call, Throwable t) {\n                Log.e(\"error on login\", t.toString());\n                progressDialog.dismiss();\n            }\n        });\n\n\n    }\n\n    private void openMainActivity() {\n        Intent mainActivity = new Intent(this, MainActivity.class);\n        startActivity(mainActivity);\n        finish();\n    }\n\n\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/pe/tp1/hdpeta/jalame/Activity/LoginActivity.java	(date 1531555782000)
++++ app/src/main/java/pe/tp1/hdpeta/jalame/Activity/LoginActivity.java	(date 1531556155505)
+@@ -16,6 +16,7 @@
+ import com.google.gson.GsonBuilder;
+ 
+ import pe.tp1.hdpeta.jalame.Bean.PersonBean;
++import pe.tp1.hdpeta.jalame.DataBase.DBHelper;
+ import pe.tp1.hdpeta.jalame.Interface.RestClient;
+ import pe.tp1.hdpeta.jalame.Interface.ServiceList;
+ import pe.tp1.hdpeta.jalame.Network.RetrofitInstance;
+@@ -98,7 +99,7 @@
+                 switch (response.code()) {
+                     case 200:
+                         PersonSingleton.getInstance().setPersonBean(response.body());
+-                        openMainActivity();
++                        openMainActivityWithPersonBean(response.body());
+                         break;
+                     case 404:
+                         Log.d("Error message ", response.raw().toString());
+@@ -119,7 +120,9 @@
+ 
+     }
+ 
+-    private void openMainActivity() {
++    private void openMainActivityWithPersonBean(PersonBean personBean) {
++        DBHelper dbHelper = new DBHelper(this);
++        dbHelper.savePerson(personBean);
+         Intent mainActivity = new Intent(this, MainActivity.class);
+         startActivity(mainActivity);
+         finish();
+Index: app/src/main/java/pe/tp1/hdpeta/jalame/Activity/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package pe.tp1.hdpeta.jalame.Activity;\n\nimport android.content.Intent;\nimport android.os.Bundle;\nimport android.os.StrictMode;\nimport android.support.design.widget.FloatingActionButton;\nimport android.support.design.widget.Snackbar;\nimport android.support.v4.app.Fragment;\nimport android.support.v4.app.FragmentManager;\nimport android.support.v4.app.FragmentTransaction;\nimport android.view.View;\nimport android.support.design.widget.NavigationView;\nimport android.support.v4.view.GravityCompat;\nimport android.support.v4.widget.DrawerLayout;\nimport android.support.v7.app.ActionBarDrawerToggle;\nimport android.support.v7.app.AppCompatActivity;\nimport android.support.v7.widget.Toolbar;\nimport android.view.Menu;\nimport android.view.MenuItem;\nimport android.widget.TextView;\n\nimport pe.tp1.hdpeta.jalame.Fragment.MapFragment;\nimport pe.tp1.hdpeta.jalame.Fragment.ServiciosFragment;\nimport pe.tp1.hdpeta.jalame.Fragment.NearDriversFragment;\nimport pe.tp1.hdpeta.jalame.R;\n\npublic class MainActivity extends AppCompatActivity\n        implements NavigationView.OnNavigationItemSelectedListener {\n\n    private TextView txtUserName;\n    private TextView txtUserEmail;\n    @Override\n    protected void onCreate(Bundle savedInstanceState) {\n        super.onCreate(savedInstanceState);\n        setContentView(R.layout.activity_main);\n\n        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();\n        StrictMode.setThreadPolicy(policy);\n\n        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);\n        setSupportActionBar(toolbar);\n\n/*\n        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);\n        fab.setOnClickListener(new View.OnClickListener() {\n            @Override\n            public void onClick(View view) {\n                Snackbar.make(view, \"Replace with your own action\", Snackbar.LENGTH_LONG)\n                        .setAction(\"Action\", null).show();\n            }\n        });\n*/\n\n\n        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);\n        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(\n                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);\n        drawer.addDrawerListener(toggle);\n        toggle.syncState();\n\n        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);\n        txtUserName = (TextView) findViewById(R.id.txtUserName);\n        txtUserEmail = (TextView) findViewById(R.id.txtUserEmail);\n        navigationView.setNavigationItemSelectedListener(this);\n        FragmentManager fragmentManager = getSupportFragmentManager();\n        fragmentManager.beginTransaction().replace(R.id.container, new MapFragment()).commit();\n\n        //txtUserName.setText(getIntent().getExtras().getString(\"nombre\"));\n        //txtUserEmail.setText(getIntent().getExtras().getString(\"email\"));\n    }\n\n    @Override\n    public void onBackPressed() {\n        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);\n        if (drawer.isDrawerOpen(GravityCompat.START)) {\n            drawer.closeDrawer(GravityCompat.START);\n        } else {\n            super.onBackPressed();\n        }\n    }\n\n    @Override\n    public boolean onCreateOptionsMenu(Menu menu) {\n        // Inflate the menu; this adds items to the action bar if it is present.\n        getMenuInflater().inflate(R.menu.main, menu);\n        return true;\n    }\n\n    @Override\n    public boolean onOptionsItemSelected(MenuItem item) {\n        // Handle action bar item clicks here. The action bar will\n        // automatically handle clicks on the Home/Up button, so long\n        // as you specify a parent activity in AndroidManifest.xml.\n        int id = item.getItemId();\n\n        //noinspection SimplifiableIfStatement\n        if (id == R.id.action_settings) {\n            return true;\n        }\n\n        return super.onOptionsItemSelected(item);\n    }\n\n    @SuppressWarnings(\"StatementWithEmptyBody\")\n    @Override\n    public boolean onNavigationItemSelected(MenuItem item) {\n        // Handle navigation view item clicks here.\n        int id = item.getItemId();\n\n        Fragment fragment = null;\n        boolean needCheck = true;\n\n\n        if (id == R.id.nav_ubicacion) {\n            fragment = MapFragment.newInstance();\n        } else if (id == R.id.nav_conductor) {\n            fragment = new NearDriversFragment();\n        } else if (id == R.id.nav_servicios) {\n            fragment = new ServiciosFragment();\n        } else if (id == R.id.nav_pagos) {\n\n        } else if (id == R.id.nav_manage) {\n\n        } else if (id == R.id.nav_share) {\n            needCheck=false;\n        } else if (id == R.id.nav_calificar) {\n            needCheck=false;\n        } else if (id == R.id.nav_logout) {\n            needCheck=false;\n            Intent loginActivity = new Intent(this, LoginActivity.class);\n            startActivity(loginActivity);\n            finish();\n\n        }\n\n        if ( fragment != null){\n            // Parameters to Fragment\n            //SampleFragment fragment = new SampleFragment();\n            //Bundle args = new Bundle();\n            //args.putInt(SampleFragment.ARG_POSITION, position);\n            //fragment.setArguments(args);\n\n            //Paso 1: Obtener la instancia del administrador de fragmentos\n            FragmentManager fragmentManager = getSupportFragmentManager();\n\n            //Paso 2: Crear una nueva transacción\n            FragmentTransaction transaction = fragmentManager.beginTransaction();\n\n            //Paso 3: Añadir/Remplazar el nuevo fragmento creado al Activity\n            transaction.replace(R.id.container , fragment);\n            //transaction.add(R.id.content_main, fragment);\n\n            transaction.addToBackStack(null);\n\n            //Paso 4: Confirmar el cambio\n            transaction.commit();\n        }\n\n        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);\n        drawer.closeDrawer(GravityCompat.START);\n\n        if (needCheck) item.setChecked(true);\n\n        getSupportActionBar().setTitle(item.getTitle());\n\n        return true;\n\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/pe/tp1/hdpeta/jalame/Activity/MainActivity.java	(date 1531555782000)
++++ app/src/main/java/pe/tp1/hdpeta/jalame/Activity/MainActivity.java	(date 1531556155646)
+@@ -7,7 +7,11 @@
+ import android.support.design.widget.Snackbar;
+ import android.support.v4.app.Fragment;
+ import android.support.v4.app.FragmentManager;
++<<<<<<< HEAD
+ import android.support.v4.app.FragmentTransaction;
++=======
++import android.util.Log;
++>>>>>>> origin/develop
+ import android.view.View;
+ import android.support.design.widget.NavigationView;
+ import android.support.v4.view.GravityCompat;
+@@ -19,6 +23,8 @@
+ import android.view.MenuItem;
+ import android.widget.TextView;
+ 
++import pe.tp1.hdpeta.jalame.Bean.PersonBean;
++import pe.tp1.hdpeta.jalame.DataBase.DBHelper;
+ import pe.tp1.hdpeta.jalame.Fragment.MapFragment;
+ import pe.tp1.hdpeta.jalame.Fragment.ServiciosFragment;
+ import pe.tp1.hdpeta.jalame.Fragment.NearDriversFragment;
+@@ -59,14 +65,19 @@
+         toggle.syncState();
+ 
+         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+-        txtUserName = (TextView) findViewById(R.id.txtUserName);
+-        txtUserEmail = (TextView) findViewById(R.id.txtUserEmail);
++        View headerLayout = navigationView.getHeaderView(0);
++
++        txtUserName = (TextView) headerLayout.findViewById(R.id.txtUserName);
++        txtUserEmail = (TextView) headerLayout.findViewById(R.id.txtUserEmail);
+         navigationView.setNavigationItemSelectedListener(this);
+         FragmentManager fragmentManager = getSupportFragmentManager();
+         fragmentManager.beginTransaction().replace(R.id.container, new MapFragment()).commit();
+ 
+-        //txtUserName.setText(getIntent().getExtras().getString("nombre"));
+-        //txtUserEmail.setText(getIntent().getExtras().getString("email"));
++        DBHelper db = new DBHelper(this);
++        PersonBean personBean = db.personBean();
++
++        txtUserName.setText(personBean.getNombre());
++        txtUserEmail.setText(personBean.getCorreo());
+     }
+ 
+     @Override
+@@ -126,11 +137,15 @@
+         } else if (id == R.id.nav_calificar) {
+             needCheck=false;
+         } else if (id == R.id.nav_logout) {
++<<<<<<< HEAD
+             needCheck=false;
+             Intent loginActivity = new Intent(this, LoginActivity.class);
+             startActivity(loginActivity);
+             finish();
+ 
++=======
++            logoutUser();
++>>>>>>> origin/develop
+         }
+ 
+         if ( fragment != null){
+@@ -165,5 +180,13 @@
+ 
+         return true;
+ 
++    }
++
++    private void logoutUser() {
++
++        this.deleteDatabase("Jalame.bd");
++        Intent loginActivity = new Intent(this, LoginActivity.class);
++        startActivity(loginActivity);
++        finish();
+     }
+ }
+Index: app/src/main/java/pe/tp1/hdpeta/jalame/Activity/SplashActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package pe.tp1.hdpeta.jalame.Activity;\n\nimport android.content.Intent;\nimport android.support.v7.app.AppCompatActivity;\nimport android.os.Bundle;\n\npublic class SplashActivity extends AppCompatActivity {\n\n    @Override\n    protected void onCreate(Bundle savedInstanceState) {\n        super.onCreate(savedInstanceState);\n        //setContentView(R.layout.activity_splash);\n\n        new android.os.Handler().postDelayed(new Runnable() {\n            @Override\n            public void run() {\n                presentLoginActivity();\n            }\n        }, 2000);\n    }\n\n    private void presentLoginActivity() {\n        Intent loginActivity = new Intent(this, LoginActivity.class);\n        startActivity(loginActivity);\n        finish();\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/pe/tp1/hdpeta/jalame/Activity/SplashActivity.java	(date 1531555782000)
++++ app/src/main/java/pe/tp1/hdpeta/jalame/Activity/SplashActivity.java	(date 1531556155506)
+@@ -4,6 +4,9 @@
+ import android.support.v7.app.AppCompatActivity;
+ import android.os.Bundle;
+ 
++import pe.tp1.hdpeta.jalame.Bean.PersonBean;
++import pe.tp1.hdpeta.jalame.DataBase.DBHelper;
++
+ public class SplashActivity extends AppCompatActivity {
+ 
+     @Override
+@@ -14,11 +17,28 @@
+         new android.os.Handler().postDelayed(new Runnable() {
+             @Override
+             public void run() {
+-                presentLoginActivity();
++                validateUserSession();
+             }
+         }, 2000);
+     }
+ 
++    private void validateUserSession(){
++        DBHelper db = new DBHelper(this);
++        PersonBean personBean = db.personBean();
++
++        if (personBean == null) {
++            presentLoginActivity();
++        } else {
++            presentMainActivity();
++        }
++    }
++
++    private void presentMainActivity(){
++        Intent mainActivity = new Intent(this, MainActivity.class);
++        startActivity(mainActivity);
++        finish();
++    }
++
+     private void presentLoginActivity() {
+         Intent loginActivity = new Intent(this, LoginActivity.class);
+         startActivity(loginActivity);
+Index: app/src/main/java/pe/tp1/hdpeta/jalame/Activity/UserSignUpActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package pe.tp1.hdpeta.jalame.Activity;\n\nimport android.app.ProgressDialog;\nimport android.content.Intent;\nimport android.support.v7.app.AppCompatActivity;\nimport android.os.Bundle;\nimport android.view.View;\nimport android.widget.Button;\nimport android.widget.CheckBox;\nimport android.widget.EditText;\nimport android.widget.Toast;\n\nimport java.util.HashMap;\n\nimport pe.tp1.hdpeta.jalame.Bean.PersonBean;\nimport pe.tp1.hdpeta.jalame.Interface.RestClient;\nimport pe.tp1.hdpeta.jalame.Network.RetrofitInstance;\nimport pe.tp1.hdpeta.jalame.R;\nimport pe.tp1.hdpeta.jalame.Singleton.PersonSingleton;\nimport retrofit2.Call;\nimport retrofit2.Callback;\nimport retrofit2.Response;\n\npublic class UserSignUpActivity extends AppCompatActivity {\n    static final String BASE_URL = \"http://services.tarrillobarba.com.pe:6789/\";\n    private EditText txtName;\n    private EditText txtLastName;\n    private EditText txtEmail;\n    private EditText txtPhone;\n    private EditText txtPassword;\n    private EditText txtConfirmPassword;\n    private CheckBox ckbHaveCar;\n    private Button btnRegister;\n\n    private ProgressDialog progressDialog;\n\n    private HashMap<String, PersonBean> userInfo;\n    @Override\n    protected void onCreate(Bundle savedInstanceState) {\n        super.onCreate(savedInstanceState);\n        setContentView(R.layout.activity_user_signup);\n\n        txtName = (EditText) findViewById(R.id.txtName);\n        txtLastName = (EditText) findViewById(R.id.txtLastName);\n        txtEmail = (EditText) findViewById(R.id.txtEmail);\n        txtPhone = (EditText) findViewById(R.id.txtPhone);\n        txtPassword = (EditText) findViewById(R.id.txtPassword);\n        txtConfirmPassword = (EditText) findViewById(R.id.txtConfirmPassword);\n        btnRegister = (Button) findViewById(R.id.btnRegister);\n        ckbHaveCar = (CheckBox) findViewById(R.id.ckbHaveCar);\n        ckbHaveCar.setChecked(false);\n        ckbHaveCar.setOnClickListener(new View.OnClickListener() {\n            @Override\n            public void onClick(View v) {\n                if (ckbHaveCar.isChecked()) {\n                    btnRegister.setText(\"Continuar\");\n                } else {\n                    btnRegister.setText(\"Registrar\");\n                }\n            }\n        });\n\n        btnRegister.setOnClickListener(new View.OnClickListener() {\n            @Override\n            public void onClick(View v) {\n                RegisterUser();\n            }\n        });\n    }\n\n    private void RegisterUser() {\n        if (!IsValidForm()) {\n            return;\n        }\n\n        PersonBean newPerson = new PersonBean();\n        newPerson.setNombre(txtName.getText().toString());\n        newPerson.setApellido(txtLastName.getText().toString());\n        newPerson.setClave(txtPassword.getText().toString());\n        newPerson.setCorreo(txtEmail.getText().toString());\n        newPerson.setTelefono(txtPhone.getText().toString());\n        newPerson.setCalificacion(0);\n        newPerson.setCarrera(\"\");\n        newPerson.setCodPersona(0);\n        newPerson.setDni(\"\");\n        newPerson.setEstadoR(\"\");\n        newPerson.setPerfil(\"\");\n        newPerson.setSexo(\"\");\n\n        saveUserInformation(newPerson);\n\n    }\n\n    private void validateCheckBox() {\n\n        CleanForm();\n\n        if (ckbHaveCar.isChecked()) {\n            Bundle bundle = new Bundle();\n            PersonBean person = PersonSingleton.getInstance().getPersonBean();\n            bundle.putInt(\"codPersona\", person.getCodPersona());\n\n            Intent driverSignUpIntent = new Intent(this, DriverSignUpActivity.class);\n            driverSignUpIntent.putExtras(bundle);\n            startActivity(driverSignUpIntent);\n        } else {\n            openMainActivity();\n            finish();\n        }\n    }\n\n\n    private void saveUserInformation(PersonBean newPerson) {\n\n        RestClient restClient = RetrofitInstance.getRetrofitInstance().create(RestClient.class);\n        Call<PersonBean> call = restClient.createUser(newPerson);\n\n        call.enqueue(new Callback<PersonBean>() {\n            @Override\n            public void onResponse(Call<PersonBean> call, Response<PersonBean> response) {\n                switch (response.code()){\n                    case 200:\n                        PersonSingleton.getInstance().setPersonBean(response.body());\n                        validateCheckBox();\n                    default:\n                        break;\n                }\n            }\n\n            @Override\n            public void onFailure(Call<PersonBean> call, Throwable t) {\n\n            }\n        });\n    }\n\n    private void openMainActivity() {\n        Intent mainActivity = new Intent(this, MainActivity.class);\n        startActivity(mainActivity);\n    }\n\n    private void CleanForm(){\n        txtName.setText(\"\");\n        txtLastName.setText(\"\");\n        txtEmail.setText(\"\");\n        txtPhone.setText(\"\");\n        txtPassword.setText(\"\");\n        txtConfirmPassword.setText(\"\");\n    }\n\n    private boolean IsValidForm() {\n        if (txtName.getText().toString().isEmpty()){\n            Toast.makeText(this, \"Ingrese sus nombres correctamente\", Toast.LENGTH_SHORT).show();\n            return false;\n        }\n\n        if (txtName.getText().toString().length() < 2 || txtName.getText().toString().length() > 40){\n            Toast.makeText(this, \"Sus nombres deben contener 2 a 40 caracteres\", Toast.LENGTH_SHORT).show();\n            return false;\n        }\n\n        if (txtLastName.getText().toString().isEmpty()){\n            Toast.makeText(this, \"Ingrese sus apellidos correctamente\", Toast.LENGTH_SHORT).show();\n            return false;\n        }\n\n        if (txtName.getText().toString().length() < 2 || txtName.getText().toString().length() > 40){\n            Toast.makeText(this, \"Sus Apellidos debe contener 2 a 40 caracteres\", Toast.LENGTH_SHORT).show();\n            return false;\n        }\n\n        if (txtEmail.getText().toString().isEmpty()){\n            Toast.makeText(this, \"Ingrese su email correctamente\", Toast.LENGTH_SHORT).show();\n            return false;\n        }\n\n        if (txtPhone.getText().toString().isEmpty()){\n            Toast.makeText(this, \"Ingrese número de celular correctamente\", Toast.LENGTH_SHORT).show();\n            return false;\n        }\n\n        if (txtPhone.getText().toString().length() > 9){\n            Toast.makeText(this, \"Su número de celular debe contener 9 dígitos como máximo\", Toast.LENGTH_SHORT).show();\n            return false;\n        }\n\n\n        if (txtPassword.getText().toString().isEmpty()){\n            Toast.makeText(this, \"Ingrese contraseña correctamente\", Toast.LENGTH_SHORT).show();\n            return false;\n        }\n\n        if (txtPassword.getText().toString().length() > 8){\n            Toast.makeText(this, \"Su contraseña debe contener 8 dígitos como máximo\", Toast.LENGTH_SHORT).show();\n            return false;\n        }\n\n        if (txtConfirmPassword.getText().toString().isEmpty()){\n            Toast.makeText(this, \"Debe confirmar su contraseña\", Toast.LENGTH_SHORT).show();\n            return false;\n        }\n\n        if (!txtPassword.getText().toString().equals(txtConfirmPassword.getText().toString())){\n            Toast.makeText(this, \"La contraseña ingresada no son iguales\", Toast.LENGTH_SHORT).show();\n            return false;\n        }\n\n        return true;\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/pe/tp1/hdpeta/jalame/Activity/UserSignUpActivity.java	(date 1531555782000)
++++ app/src/main/java/pe/tp1/hdpeta/jalame/Activity/UserSignUpActivity.java	(date 1531556155509)
+@@ -13,6 +13,7 @@
+ import java.util.HashMap;
+ 
+ import pe.tp1.hdpeta.jalame.Bean.PersonBean;
++import pe.tp1.hdpeta.jalame.DataBase.DBHelper;
+ import pe.tp1.hdpeta.jalame.Interface.RestClient;
+ import pe.tp1.hdpeta.jalame.Network.RetrofitInstance;
+ import pe.tp1.hdpeta.jalame.R;
+@@ -84,24 +85,27 @@
+         newPerson.setCodPersona(0);
+         newPerson.setDni("");
+         newPerson.setEstadoR("");
+-        newPerson.setPerfil("");
++        if (ckbHaveCar.isChecked()){
++            newPerson.setPerfil("C");
++        }else {
++            newPerson.setPerfil("U");
++        }
++
+         newPerson.setSexo("");
+ 
+         saveUserInformation(newPerson);
+ 
+     }
+ 
+-    private void validateCheckBox() {
++    private void validateCheckBoxWithPersonBean(PersonBean personBean) {
+ 
+         CleanForm();
+ 
++        DBHelper bd = new DBHelper(this);
++        bd.savePerson(personBean);
++
+         if (ckbHaveCar.isChecked()) {
+-            Bundle bundle = new Bundle();
+-            PersonBean person = PersonSingleton.getInstance().getPersonBean();
+-            bundle.putInt("codPersona", person.getCodPersona());
+-
+             Intent driverSignUpIntent = new Intent(this, DriverSignUpActivity.class);
+-            driverSignUpIntent.putExtras(bundle);
+             startActivity(driverSignUpIntent);
+         } else {
+             openMainActivity();
+@@ -120,8 +124,7 @@
+             public void onResponse(Call<PersonBean> call, Response<PersonBean> response) {
+                 switch (response.code()){
+                     case 200:
+-                        PersonSingleton.getInstance().setPersonBean(response.body());
+-                        validateCheckBox();
++                        validateCheckBoxWithPersonBean(response.body());
+                     default:
+                         break;
+                 }
+Index: app/src/main/java/pe/tp1/hdpeta/jalame/Bean/PersonBean.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package pe.tp1.hdpeta.jalame.Bean;\n\npublic class PersonBean {\n\n    private int codPersona;\n    private String nombre;\n    private String apellido;\n    private String sexo;\n    private String dni;\n    private String perfil;\n    private String carrera;\n    private String correo;\n    private String telefono;\n    private int calificacion;\n    private String clave;\n    private String estadoR;\n\n    public PersonBean(){}\n\n    public PersonBean(int codPersona, String nombre, String apellido, String sexo, String dni, String perfil, String carrera, String correo, String telefono, int calificacion, String clave, String estadoR) {\n        this.codPersona = codPersona;\n        this.nombre = nombre;\n        this.apellido = apellido;\n        this.sexo = sexo;\n        this.dni = dni;\n        this.perfil = perfil;\n        this.carrera = carrera;\n        this.correo = correo;\n        this.telefono = telefono;\n        this.calificacion = calificacion;\n        this.clave = clave;\n        this.estadoR = estadoR;\n    }\n\n    public int getCodPersona() {\n        return codPersona;\n    }\n\n    public void setCodPersona(int codPersona) {\n        this.codPersona = codPersona;\n    }\n\n    public String getNombre() {\n        return nombre;\n    }\n\n    public void setNombre(String nombre) {\n        this.nombre = nombre;\n    }\n\n    public String getApellido() {\n        return apellido;\n    }\n\n    public void setApellido(String apellido) {\n        this.apellido = apellido;\n    }\n\n    public String getSexo() {\n        return sexo;\n    }\n\n    public void setSexo(String sexo) {\n        this.sexo = sexo;\n    }\n\n    public String getDni() {\n        return dni;\n    }\n\n    public void setDni(String dni) {\n        this.dni = dni;\n    }\n\n    public String getPerfil() {\n        return perfil;\n    }\n\n    public void setPerfil(String perfil) {\n        this.perfil = perfil;\n    }\n\n    public String getCarrera() {\n        return carrera;\n    }\n\n    public void setCarrera(String carrera) {\n        this.carrera = carrera;\n    }\n\n    public String getCorreo() {\n        return correo;\n    }\n\n    public void setCorreo(String correo) {\n        this.correo = correo;\n    }\n\n    public String getTelefono() {\n        return telefono;\n    }\n\n    public void setTelefono(String telefono) {\n        this.telefono = telefono;\n    }\n\n    public int getCalificacion() {\n        return calificacion;\n    }\n\n    public void setCalificacion(int calificacion) {\n        this.calificacion = calificacion;\n    }\n\n    public String getClave() {\n        return clave;\n    }\n\n    public void setClave(String clave) {\n        this.clave = clave;\n    }\n\n    public String getEstadoR() {\n        return estadoR;\n    }\n\n    public void setEstadoR(String estadoR) {\n        this.estadoR = estadoR;\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/pe/tp1/hdpeta/jalame/Bean/PersonBean.java	(date 1531555782000)
++++ app/src/main/java/pe/tp1/hdpeta/jalame/Bean/PersonBean.java	(date 1531556155511)
+@@ -1,5 +1,7 @@
+ package pe.tp1.hdpeta.jalame.Bean;
+ 
++import android.content.ContentValues;
++
+ public class PersonBean {
+ 
+     private int codPersona;
+@@ -127,4 +129,21 @@
+     public void setEstadoR(String estadoR) {
+         this.estadoR = estadoR;
+     }
++
++    public ContentValues toContentValues(){
++        ContentValues values = new ContentValues();
++        values.put("codPersona", this.codPersona);
++        values.put("nombre", this.nombre);
++        values.put("apellido", this.apellido);
++        values.put("sexo", this.sexo);
++        values.put("dni", this.dni);
++        values.put("dni", this.perfil);
++        values.put("carrera", this.carrera);
++        values.put("correo", this.correo);
++        values.put("telefono", this.telefono);
++        values.put("calificacion", this.calificacion);
++        values.put("clave", this.clave);
++        values.put("estadoR", this.estadoR);
++        return values;
++    }
+ }
+Index: app/src/main/java/pe/tp1/hdpeta/jalame/Bean/VehiculoBean.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package pe.tp1.hdpeta.jalame.Bean;\n\nimport java.util.Date;\n\npublic class VehiculoBean {\n    private int codVehiculo;\n    private int codPersona;\n    private String polizaSoat;\n    private String marca;\n    private String modelo;\n    private String aFabrica;\n    private String matricula;\n    private String color;\n    private int asientosTotal;\n    private int asientosDisp;\n    private String latitud;\n    private String longitud;\n    private String visible;\n    private int calificacion;\n    private String estadoR;\n    private Date tsupdate;\n    private int distancia;\n\n    public VehiculoBean(int codVehiculo,\n                        int codPersona,\n                        String polizaSoat,\n                        String marca,\n                        String modelo,\n                        String aFabrica,\n                        String matricula,\n                        String color,\n                        int asientosTotal,\n                        int asientosDisp,\n                        String latitud,\n                        String longitud,\n                        String visible,\n                        int calificacion,\n                        String estadoR,\n                        Date tsupdate,\n                        int distancia) {\n        this.codVehiculo = codVehiculo;\n        this.codPersona = codPersona;\n        this.polizaSoat = polizaSoat;\n        this.marca = marca;\n        this.modelo = modelo;\n        this.aFabrica = aFabrica;\n        this.matricula = matricula;\n        this.color = color;\n        this.asientosTotal = asientosTotal;\n        this.asientosDisp = asientosDisp;\n        this.latitud = latitud;\n        this.longitud = longitud;\n        this.visible = visible;\n        this.calificacion = calificacion;\n        this.estadoR = estadoR;\n        this.tsupdate = tsupdate;\n        this.distancia = distancia;\n    }\n\n    public int getCodVehiculo() {\n        return codVehiculo;\n    }\n\n    public void setCodVehiculo(int codVehiculo) {\n        this.codVehiculo = codVehiculo;\n    }\n\n    public int getCodPersona() {\n        return codPersona;\n    }\n\n    public void setCodPersona(int codPersona) {\n        this.codPersona = codPersona;\n    }\n\n    public String getPolizaSoat() {\n        return polizaSoat;\n    }\n\n    public void setPolizaSoat(String polizaSoat) {\n        this.polizaSoat = polizaSoat;\n    }\n\n    public String getMarca() {\n        return marca;\n    }\n\n    public void setMarca(String marca) {\n        this.marca = marca;\n    }\n\n    public String getModelo() {\n        return modelo;\n    }\n\n    public void setModelo(String modelo) {\n        this.modelo = modelo;\n    }\n\n    public String getaFabrica() {\n        return aFabrica;\n    }\n\n    public void setaFabrica(String aFabrica) {\n        this.aFabrica = aFabrica;\n    }\n\n    public String getMatricula() {\n        return matricula;\n    }\n\n    public void setMatricula(String matricula) {\n        this.matricula = matricula;\n    }\n\n    public String getColor() {\n        return color;\n    }\n\n    public void setColor(String color) {\n        this.color = color;\n    }\n\n    public int getAsientosTotal() {\n        return asientosTotal;\n    }\n\n    public void setAsientosTotal(int asientosTotal) {\n        this.asientosTotal = asientosTotal;\n    }\n\n    public int getAsientosDisp() {\n        return asientosDisp;\n    }\n\n    public void setAsientosDisp(int asientosDisp) {\n        this.asientosDisp = asientosDisp;\n    }\n\n    public String getLatitud() {\n        return latitud;\n    }\n\n    public void setLatitud(String latitud) {\n        this.latitud = latitud;\n    }\n\n    public String getLongitud() {\n        return longitud;\n    }\n\n    public void setLongitud(String longitud) {\n        this.longitud = longitud;\n    }\n\n    public String getVisible() {\n        return visible;\n    }\n\n    public void setVisible(String visible) {\n        this.visible = visible;\n    }\n\n    public int getCalificacion() {\n        return calificacion;\n    }\n\n    public void setCalificacion(int calificacion) {\n        this.calificacion = calificacion;\n    }\n\n    public String getEstadoR() {\n        return estadoR;\n    }\n\n    public void setEstadoR(String estadoR) {\n        this.estadoR = estadoR;\n    }\n\n    public Date getTsupdate() {\n        return tsupdate;\n    }\n\n    public void setTsupdate(Date tsupdate) {\n        this.tsupdate = tsupdate;\n    }\n\n    public int getDistancia() {\n        return distancia;\n    }\n\n    public void setDistancia(int distancia) {\n        this.distancia = distancia;\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/pe/tp1/hdpeta/jalame/Bean/VehiculoBean.java	(date 1531555782000)
++++ app/src/main/java/pe/tp1/hdpeta/jalame/Bean/VehiculoBean.java	(date 1531556155514)
+@@ -1,6 +1,6 @@
+ package pe.tp1.hdpeta.jalame.Bean;
+ 
+-import java.util.Date;
++import android.content.ContentValues;
+ 
+ public class VehiculoBean {
+     private int codVehiculo;
+@@ -18,7 +18,7 @@
+     private String visible;
+     private int calificacion;
+     private String estadoR;
+-    private Date tsupdate;
++    private String tsupdate;
+     private int distancia;
+ 
+     public VehiculoBean(int codVehiculo,
+@@ -36,7 +36,7 @@
+                         String visible,
+                         int calificacion,
+                         String estadoR,
+-                        Date tsupdate,
++                        String tsupdate,
+                         int distancia) {
+         this.codVehiculo = codVehiculo;
+         this.codPersona = codPersona;
+@@ -177,11 +177,11 @@
+         this.estadoR = estadoR;
+     }
+ 
+-    public Date getTsupdate() {
++    public String getTsupdate() {
+         return tsupdate;
+     }
+ 
+-    public void setTsupdate(Date tsupdate) {
++    public void setTsupdate(String tsupdate) {
+         this.tsupdate = tsupdate;
+     }
+ 
+@@ -192,4 +192,26 @@
+     public void setDistancia(int distancia) {
+         this.distancia = distancia;
+     }
++
++    public ContentValues toContentValues(){
++        ContentValues values = new ContentValues();
++        values.put("codVehiculo", this.codVehiculo);
++        values.put("codPersona", this.codPersona);
++        values.put("polizaSoat", this.polizaSoat);
++        values.put("marca", this.marca);
++        values.put("modelo", this.modelo);
++        values.put("aFabrica", this.aFabrica);
++        values.put("matricula", this.matricula);
++        values.put("color", this.color);
++        values.put("asientosTotal", this.asientosTotal);
++        values.put("asientosDisp", this.asientosDisp);
++        values.put("latitud", this.latitud);
++        values.put("longitud", this.longitud);
++        values.put("visible", this.visible);
++        values.put("calificacion", this.calificacion);
++        values.put("estadoR", this.estadoR);
++        values.put("tsupdate", this.tsupdate);
++        values.put("distancia", this.distancia);
++        return values;
++    }
+ }
+Index: app/src/main/java/pe/tp1/hdpeta/jalame/DataBase/DBHelper.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package pe.tp1.hdpeta.jalame.DataBase;\n\nimport android.content.Context;\nimport android.database.Cursor;\nimport android.database.sqlite.SQLiteDatabase;\nimport android.database.sqlite.SQLiteOpenHelper;\n\nimport java.sql.Date;\nimport java.text.DateFormat;\nimport java.util.ArrayList;\nimport java.util.List;\n\nimport pe.tp1.hdpeta.jalame.Bean.ServicioBean;\n\npublic class DBHelper extends SQLiteOpenHelper {\n\n    public static final int DATABASE_VERSION = 1;\n    public static final String DATABASE_NAME = \"Jalame.bd\";\n    private List<ServicioBean> services = new ArrayList<>();\n\n    public DBHelper(Context context) {\n        super(context, DATABASE_NAME, null, DATABASE_VERSION);\n        this.services = services;\n    }\n\n    @Override\n    public void onCreate(SQLiteDatabase db) {\n        db.execSQL(\"CREATE TABLE IF NOT EXISTS SERVICIO (\" +\n                \"codServicio INTEGER, \" +\n                \"codConductor INTEGER, \" +\n                \"codUsuario INTEGER, \" +\n                \"codVehiculo INTEGER, \" +\n                \"codTarifa INTEGER, \" +\n                \"codFormaPago INTEGER, \" +\n                \"fecRegistro VARCHAR(120), \" +\n                \"inicioServ VARCHAR(120), \" +\n                \"finServ VARCHAR(120), \" +\n                \"origenDes VARCHAR(120), \" +\n                \"origenLat VARCHAR(120), \" +\n                \"origenLon VARCHAR(120), \" +\n                \"destinoDes VARCHAR(120), \" +\n                \"destinoLat VARCHAR(120), \" +\n                \"destinoLon VARCHAR(120), \" +\n                \"calificacionUsuario INTEGER, \" +\n                \"calificacionConductor INTEGER, \" +\n                \"calificacionVehiculo INTEGER, \" +\n                \"commtUsua VARCHAR(120), \" +\n                \"commtCond VARCHAR(120), \" +\n                \"estadoServ VARCHAR(120),  \" +\n                \"importe DOUBLE, \" +\n                \"estadoR VARCHAR(120),  \" +\n                \"tsupdate VARCHAR(120),  \" +\n                \"usuario VARCHAR(120),  \" +\n                \"conductor VARCHAR(120),  \" +\n                \"vehiculo VARCHAR(120),  \" +\n                \"formaPago VARCHAR(120)) \");\n\n\n    }\n\n    public List<ServicioBean> getAllServices(){\n\n        SQLiteDatabase db = getReadableDatabase();\n        Cursor c = db.query(\"SERVICIO\",\n                null,\n                null,\n                null,\n                null,\n                null,\n                \"codServicio DESC\");\n\n        List<ServicioBean> services = new ArrayList<>();\n        while (c.moveToNext()){\n            services.add(new ServicioBean(c.getInt(0),\n                    c.getInt(1),\n                    c.getInt(2),\n                    c.getInt(3),\n                    c.getInt(4),\n                    c.getInt(5),\n                    c.getString(6),\n                    c.getString(7),\n                    c.getString(8),\n                    c.getString(9),\n                    c.getString(10),\n                    c.getString(11),\n                    c.getString(12),\n                    c.getString(13),\n                    c.getString(14),\n                    c.getInt(15),\n                    c.getInt(16),\n                    c.getInt(17),\n                    c.getString(18),\n                    c.getString(19),\n                    c.getString(20),\n                    c.getDouble(21),\n                    c.getString(22),\n                    c.getString(23),\n                    c.getString(24),\n                    c.getString(25),\n                    c.getString(26),\n                    c.getString(27)\n                    ));\n        }\n\n        return services;\n    }\n\n    public void SaveServices(ServicioBean service){\n        SQLiteDatabase db = getWritableDatabase();\n        db.insert(\"SERVICIO\", null, service.toContentValues());\n    }\n\n    public int deleteService(String codServicio){\n        return getWritableDatabase().delete(\"SERVICIO\",\"codServicio=?\", new String[]{codServicio});\n    }\n\n    @Override\n    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {\n\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/pe/tp1/hdpeta/jalame/DataBase/DBHelper.java	(date 1531555782000)
++++ app/src/main/java/pe/tp1/hdpeta/jalame/DataBase/DBHelper.java	(date 1531556155516)
+@@ -10,7 +10,9 @@
+ import java.util.ArrayList;
+ import java.util.List;
+ 
++import pe.tp1.hdpeta.jalame.Bean.PersonBean;
+ import pe.tp1.hdpeta.jalame.Bean.ServicioBean;
++import pe.tp1.hdpeta.jalame.Bean.VehiculoBean;
+ 
+ public class DBHelper extends SQLiteOpenHelper {
+ 
+@@ -55,7 +57,124 @@
+                 "vehiculo VARCHAR(120),  " +
+                 "formaPago VARCHAR(120)) ");
+ 
++        db.execSQL("CREATE TABLE IF NOT EXISTS PERSONA (" +
++                "codPersona INTEGER, " +
++                "nombre VARCHAR(120), " +
++                "apellido VARCHAR(120), " +
++                "sexo VARCHAR(120), " +
++                "dni VARCHAR(120), " +
++                "perfil VARCHAR(120), " +
++                "carrera VARCHAR(120), " +
++                "correo VARCHAR(120), " +
++                "telefono VARCHAR(120), " +
++                "calificacion INTEGER, " +
++                "clave VARCHAR(120), " +
++                "estadoR VARCHAR(120)) ");
++
++        db.execSQL("CREATE TABLE IF NOT EXISTS VEHICULO (" +
++                "codVehiculo INTEGER, " +
++                "codPersona INTEGER, " +
++                "polizaSoat VARCHAR(120), " +
++                "marca VARCHAR(120), " +
++                "modelo VARCHAR(120), " +
++                "aFabrica VARCHAR(120), " +
++                "matricula VARCHAR(120), " +
++                "color VARCHAR(120), " +
++                "asientosTotal INTEGER, " +
++                "asientosDisp INTEGER, " +
++                "latitud VARCHAR(120), " +
++                "longitud VARCHAR(120), " +
++                "visible VARCHAR(120), " +
++                "calificacion INTEGER, " +
++                "estadoR VARCHAR(120), " +
++                "tsupdate VARCHAR(120), " +
++                "distancia INTEGER) ");
++
++    }
++
++    public VehiculoBean vehiculoBean(){
++        SQLiteDatabase db = getReadableDatabase();
++        Cursor c = db.query("VEHICULO",
++                null,
++                null,
++                null,
++                null,
++                null,
++                null);
++
++        return new VehiculoBean(c.getInt(0),
++                c.getInt(1),
++                c.getString(2),
++                c.getString(3),
++                c.getString(4),
++                c.getString(5),
++                c.getString(6),
++                c.getString(7),
++                c.getInt(8),
++                c.getInt(9),
++                c.getString(10),
++                c.getString(11),
++                c.getString(12),
++                c.getInt(13),
++                c.getString(14),
++                c.getString(15),
++                c.getInt(16));
++    }
++
++    public PersonBean personBean(){
++        SQLiteDatabase db = getReadableDatabase();
++        Cursor c = db.query("PERSONA",
++                null,
++                null,
++                null,
++                null,
++                null,
++                null);
++
++        List<PersonBean> personBeans = new ArrayList<>();
++        while (c.moveToNext()){
++            personBeans.add(new PersonBean(c.getInt(0),
++                    c.getString(1),
++                    c.getString(2),
++                    c.getString(3),
++                    c.getString(4),
++                    c.getString(5),
++                    c.getString(6),
++                    c.getString(7),
++                    c.getString(8),
++                    c.getInt(9),
++                    c.getString(10),
++                    c.getString(11))
++            );
++        }
+ 
++        if (personBeans.size() > 0) {
++            return personBeans.get(0);
++        } else {
++            return null;
++        }
++    }
++
++    public void saveVehiculo(VehiculoBean vehiculoBean){
++        SQLiteDatabase db = getWritableDatabase();
++        db.insert("VEHICULO", null, vehiculoBean.toContentValues());
++    }
++    public void savePerson(PersonBean personBean){
++        SQLiteDatabase db = getWritableDatabase();
++        db.insert("PERSONA",null, personBean.toContentValues());
++    }
++
++    public void updatePerson(PersonBean personBean){
++        SQLiteDatabase db = getWritableDatabase();
++        db.update("PERSONA", personBean.toContentValues(), "codPersona=?", new String[]{String.valueOf(personBean.getCodPersona())});
++    }
++
++    public int deletePerson(String codPersona){
++        return getWritableDatabase().delete("PERSONA","codPersona=?",new String[]{codPersona});
++    }
++
++    public int deleteVehiculo(String codVehiculo){
++        return getWritableDatabase().delete("VEHICULO","codVehiculo=?", new String[]{codVehiculo});
+     }
+ 
+     public List<ServicioBean> getAllServices(){
+@@ -118,4 +237,5 @@
+     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+ 
+     }
++
+ }
+Index: app/src/main/java/pe/tp1/hdpeta/jalame/Fragment/NearDriversFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package pe.tp1.hdpeta.jalame.Fragment;\n\nimport android.app.ProgressDialog;\nimport android.os.Bundle;\nimport android.support.v4.app.Fragment;\nimport android.support.v7.widget.LinearLayoutManager;\nimport android.support.v7.widget.RecyclerView;\nimport android.util.Log;\nimport android.view.LayoutInflater;\nimport android.view.View;\nimport android.view.ViewGroup;\n\nimport java.util.ArrayList;\nimport java.util.List;\n\nimport pe.tp1.hdpeta.jalame.Adapter.NearDriversAdapter;\nimport pe.tp1.hdpeta.jalame.Adapter.ServicesAdapter;\nimport pe.tp1.hdpeta.jalame.Bean.PersonBean;\nimport pe.tp1.hdpeta.jalame.Bean.ServicioBean;\nimport pe.tp1.hdpeta.jalame.Bean.VehiculoBean;\nimport pe.tp1.hdpeta.jalame.Interface.NearDriverList;\nimport pe.tp1.hdpeta.jalame.Interface.RestClient;\nimport pe.tp1.hdpeta.jalame.Network.RetrofitInstance;\nimport pe.tp1.hdpeta.jalame.R;\nimport retrofit2.Call;\nimport retrofit2.Callback;\nimport retrofit2.Response;\nimport retrofit2.Retrofit;\nimport retrofit2.converter.gson.GsonConverterFactory;\n\n\npublic class NearDriversFragment extends Fragment {\n\n    static final String BASE_URL = \"http://services.tarrillobarba.com.pe:6789/\";\n\n    private RecyclerView recyclerView;\n    private List<VehiculoBean> cars = new ArrayList<>();\n    private NearDriversAdapter adapter;\n    private RecyclerView.LayoutManager layoutManager;\n    ProgressDialog progressDialog;\n\n    @Override\n    public View onCreateView(LayoutInflater inflater, ViewGroup container,\n                             Bundle savedInstanceState) {\n        View rootView = inflater.inflate(R.layout.fragment_near_drivers, container, false);\n\n        /*recyclerView = (RecyclerView) rootView.findViewById(R.id.servicesRecyclerView);\n        layoutManager = new LinearLayoutManager(getContext());\n        recyclerView.setLayoutManager(layoutManager);*/\n\n        recyclerView = (RecyclerView) rootView.findViewById(R.id.nearDriversRecyclerView);\n        layoutManager = new LinearLayoutManager(getContext());\n        recyclerView.setLayoutManager(layoutManager);\n        progressDialog = ProgressDialog.show(getContext(),\"Cargando conductores cercanos\", \"Porfavor espere..\");\n        FillNearDrivers();\n        return rootView;\n    }\n\n    private void FillNearDrivers() {\n\n        RestClient retrofit = RetrofitInstance.getRetrofitInstance().create(RestClient.class);\n//restClient.nearDrivers(7,\"-12.05165\",\"-77.03461\");\n        Call<NearDriverList> call = retrofit.nearDrivers(7,\"-12.05165\",\"-77.03461\");\n        call.enqueue(new Callback<NearDriverList>() {\n            @Override\n            public void onResponse(Call<NearDriverList> call, Response<NearDriverList> response) {\n                progressDialog.dismiss();\n                generateNearDriverList(response.body().getVehiculoArrayList());\n            }\n\n            @Override\n            public void onFailure(Call<NearDriverList> call, Throwable t) {\n                Log.d(\"Error: \", t.getMessage());\n                progressDialog.dismiss();\n            }\n        });\n    }\n    private void generateNearDriverList(ArrayList<VehiculoBean> nearDriverArrayList) {\n        adapter = new NearDriversAdapter(nearDriverArrayList);\n        recyclerView.setAdapter(adapter);\n    }\n\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/pe/tp1/hdpeta/jalame/Fragment/NearDriversFragment.java	(date 1531555782000)
++++ app/src/main/java/pe/tp1/hdpeta/jalame/Fragment/NearDriversFragment.java	(date 1531556155518)
+@@ -18,6 +18,7 @@
+ import pe.tp1.hdpeta.jalame.Bean.PersonBean;
+ import pe.tp1.hdpeta.jalame.Bean.ServicioBean;
+ import pe.tp1.hdpeta.jalame.Bean.VehiculoBean;
++import pe.tp1.hdpeta.jalame.DataBase.DBHelper;
+ import pe.tp1.hdpeta.jalame.Interface.NearDriverList;
+ import pe.tp1.hdpeta.jalame.Interface.RestClient;
+ import pe.tp1.hdpeta.jalame.Network.RetrofitInstance;
+@@ -58,9 +59,12 @@
+ 
+     private void FillNearDrivers() {
+ 
++        DBHelper db = new DBHelper(getContext());
++        PersonBean personBean = db.personBean();
++
+         RestClient retrofit = RetrofitInstance.getRetrofitInstance().create(RestClient.class);
+ //restClient.nearDrivers(7,"-12.05165","-77.03461");
+-        Call<NearDriverList> call = retrofit.nearDrivers(7,"-12.05165","-77.03461");
++        Call<NearDriverList> call = retrofit.nearDrivers(personBean.getCodPersona(),"-12.05165","-77.03461");
+         call.enqueue(new Callback<NearDriverList>() {
+             @Override
+             public void onResponse(Call<NearDriverList> call, Response<NearDriverList> response) {
+Index: app/src/main/java/pe/tp1/hdpeta/jalame/Fragment/ServiciosFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package pe.tp1.hdpeta.jalame.Fragment;\n\nimport android.app.ProgressDialog;\nimport android.content.Context;\nimport android.net.Uri;\nimport android.os.Bundle;\nimport android.support.v4.app.Fragment;\nimport android.support.v7.widget.DefaultItemAnimator;\nimport android.support.v7.widget.LinearLayoutManager;\nimport android.support.v7.widget.RecyclerView;\nimport android.util.Log;\nimport android.view.LayoutInflater;\nimport android.view.View;\nimport android.view.ViewGroup;\n\nimport java.util.ArrayList;\nimport java.util.Date;\nimport java.util.List;\n\nimport pe.tp1.hdpeta.jalame.Activity.LoginActivity;\nimport pe.tp1.hdpeta.jalame.Adapter.ServicesAdapter;\nimport pe.tp1.hdpeta.jalame.Bean.ServicioBean;\nimport pe.tp1.hdpeta.jalame.Bean.VehiculoBean;\nimport pe.tp1.hdpeta.jalame.Interface.RestClient;\nimport pe.tp1.hdpeta.jalame.Interface.ServiceList;\nimport pe.tp1.hdpeta.jalame.Network.RetrofitInstance;\nimport pe.tp1.hdpeta.jalame.R;\nimport pe.tp1.hdpeta.jalame.Singleton.PersonSingleton;\nimport retrofit2.Call;\nimport retrofit2.Callback;\nimport retrofit2.Response;\nimport retrofit2.Retrofit;\nimport retrofit2.converter.gson.GsonConverterFactory;\n\nimport static pe.tp1.hdpeta.jalame.Fragment.NearDriversFragment.BASE_URL;\n\npublic class ServiciosFragment extends Fragment {\n\n    private RecyclerView recyclerView;\n    private List<ServicioBean> services = new ArrayList<>();\n    private ServicesAdapter adapter;\n    private RecyclerView.LayoutManager layoutManager;\n    ProgressDialog progressDialog;\n\n    @Override\n    public View onCreateView(LayoutInflater inflater, ViewGroup container,\n                             Bundle savedInstanceState) {\n\n        View rootView = inflater.inflate(R.layout.fragment_servicios, container, false);\n\n        recyclerView = (RecyclerView) rootView.findViewById(R.id.servicesRecyclerView);\n        layoutManager = new LinearLayoutManager(getContext());\n        recyclerView.setLayoutManager(layoutManager);\n        progressDialog = ProgressDialog.show(getContext(),\"Cargando servicios\", \"Porfavor espere..\");\n        FillServices();\n\n        return rootView;\n    }\n\n    public void FillServices(){\n\n        RestClient restClient = RetrofitInstance.getRetrofitInstance().create(RestClient.class);\n\n        Call<ServiceList> call = restClient.services(1);\n\n        Log.d(\"URL Called\", call.request().url() + \"\");\n\n        call.enqueue(new Callback<ServiceList>() {\n            @Override\n            public void onResponse(Call<ServiceList> call, Response<ServiceList> response) {\n                progressDialog.dismiss();\n                generateServiceList(response.body().getServiceArrayList());\n            }\n\n            @Override\n            public void onFailure(Call<ServiceList> call, Throwable t) {\n                progressDialog.dismiss();\n                Log.d(\"Error\", t.getMessage());\n            }\n        });\n\n    }\n\n    private void generateServiceList(ArrayList<ServicioBean> serviceArrayList) {\n        adapter = new ServicesAdapter(serviceArrayList);\n        recyclerView.setAdapter(adapter);\n    }\n\n\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/pe/tp1/hdpeta/jalame/Fragment/ServiciosFragment.java	(date 1531555782000)
++++ app/src/main/java/pe/tp1/hdpeta/jalame/Fragment/ServiciosFragment.java	(date 1531556155521)
+@@ -19,8 +19,10 @@
+ 
+ import pe.tp1.hdpeta.jalame.Activity.LoginActivity;
+ import pe.tp1.hdpeta.jalame.Adapter.ServicesAdapter;
++import pe.tp1.hdpeta.jalame.Bean.PersonBean;
+ import pe.tp1.hdpeta.jalame.Bean.ServicioBean;
+ import pe.tp1.hdpeta.jalame.Bean.VehiculoBean;
++import pe.tp1.hdpeta.jalame.DataBase.DBHelper;
+ import pe.tp1.hdpeta.jalame.Interface.RestClient;
+ import pe.tp1.hdpeta.jalame.Interface.ServiceList;
+ import pe.tp1.hdpeta.jalame.Network.RetrofitInstance;
+@@ -60,8 +62,9 @@
+     public void FillServices(){
+ 
+         RestClient restClient = RetrofitInstance.getRetrofitInstance().create(RestClient.class);
+-
+-        Call<ServiceList> call = restClient.services(1);
++        DBHelper db = new DBHelper(getContext());
++        PersonBean personBean = db.personBean();
++        Call<ServiceList> call = restClient.services(personBean.getCodPersona());
+ 
+         Log.d("URL Called", call.request().url() + "");
+ 
