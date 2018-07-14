@@ -19,7 +19,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import pe.tp1.hdpeta.jalame.Bean.PersonBean;
+import pe.tp1.hdpeta.jalame.DataBase.DBHelper;
 import pe.tp1.hdpeta.jalame.Fragment.MapFragment;
+import pe.tp1.hdpeta.jalame.Fragment.ProfileFragment;
 import pe.tp1.hdpeta.jalame.Fragment.ServiciosFragment;
 import pe.tp1.hdpeta.jalame.Fragment.NearDriversFragment;
 import pe.tp1.hdpeta.jalame.R;
@@ -29,6 +32,9 @@ public class MainActivity extends AppCompatActivity
 
     private TextView txtUserName;
     private TextView txtUserEmail;
+
+    FragmentManager fragmentManager = getSupportFragmentManager();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +58,7 @@ public class MainActivity extends AppCompatActivity
 */
 
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -61,12 +67,29 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         txtUserName = (TextView) findViewById(R.id.txtUserName);
         txtUserEmail = (TextView) findViewById(R.id.txtUserEmail);
-        navigationView.setNavigationItemSelectedListener(this);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.container, new MapFragment()).commit();
+        View headerLayout = navigationView.getHeaderView(0);
 
-        //txtUserName.setText(getIntent().getExtras().getString("nombre"));
-        //txtUserEmail.setText(getIntent().getExtras().getString("email"));
+        headerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentManager.beginTransaction().replace(R.id.container, new ProfileFragment()).commit();
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        });
+
+
+        txtUserName = (TextView) headerLayout.findViewById(R.id.txtUserName);
+        txtUserEmail = (TextView) headerLayout.findViewById(R.id.txtUserEmail);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        //fragmentManager.beginTransaction().replace(R.id.container, new MapFragment()).commit();
+
+        DBHelper db = new DBHelper(this);
+        /*PersonBean personBean = db.personBean();
+
+        txtUserName.setText(personBean.getNombre());
+        txtUserEmail.setText(personBean.getCorreo());
+        */
     }
 
     @Override
@@ -141,7 +164,7 @@ public class MainActivity extends AppCompatActivity
             //fragment.setArguments(args);
 
             //Paso 1: Obtener la instancia del administrador de fragmentos
-            FragmentManager fragmentManager = getSupportFragmentManager();
+            //FragmentManager fragmentManager = getSupportFragmentManager();
 
             //Paso 2: Crear una nueva transacción
             FragmentTransaction transaction = fragmentManager.beginTransaction();

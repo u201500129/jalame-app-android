@@ -1,5 +1,7 @@
 package pe.tp1.hdpeta.jalame.Bean;
 
+import android.content.ContentValues;
+
 public class PersonBean {
 
     private int codPersona;
@@ -126,5 +128,22 @@ public class PersonBean {
 
     public void setEstadoR(String estadoR) {
         this.estadoR = estadoR;
+    }
+
+    public ContentValues toContentValues(){
+        ContentValues values = new ContentValues();
+        values.put("codPersona", this.codPersona);
+        values.put("nombre", this.nombre);
+        values.put("apellido", this.apellido);
+        values.put("sexo", this.sexo);
+        values.put("dni", this.dni);
+        values.put("perfil", this.perfil);
+        values.put("carrera", this.carrera);
+        values.put("correo", this.correo);
+        values.put("telefono", this.telefono);
+        values.put("calificacion", this.calificacion);
+        values.put("clave", this.clave);
+        values.put("estadoR", this.estadoR);
+        return values;
     }
 }
