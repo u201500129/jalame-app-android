@@ -19,8 +19,10 @@ import java.util.List;
 
 import pe.tp1.hdpeta.jalame.Activity.LoginActivity;
 import pe.tp1.hdpeta.jalame.Adapter.ServicesAdapter;
+import pe.tp1.hdpeta.jalame.Bean.PersonBean;
 import pe.tp1.hdpeta.jalame.Bean.ServicioBean;
 import pe.tp1.hdpeta.jalame.Bean.VehiculoBean;
+import pe.tp1.hdpeta.jalame.DataBase.DBHelper;
 import pe.tp1.hdpeta.jalame.Interface.RestClient;
 import pe.tp1.hdpeta.jalame.Interface.ServiceList;
 import pe.tp1.hdpeta.jalame.Network.RetrofitInstance;
@@ -60,8 +62,9 @@ public class ServiciosFragment extends Fragment {
     public void FillServices(){
 
         RestClient restClient = RetrofitInstance.getRetrofitInstance().create(RestClient.class);
-
-        Call<ServiceList> call = restClient.services(1);
+        DBHelper db = new DBHelper(getContext());
+        PersonBean personBean = db.personBean();
+        Call<ServiceList> call = restClient.services(personBean.getCodPersona());
 
         Log.d("URL Called", call.request().url() + "");
 

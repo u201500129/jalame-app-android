@@ -18,6 +18,7 @@ import pe.tp1.hdpeta.jalame.Adapter.ServicesAdapter;
 import pe.tp1.hdpeta.jalame.Bean.PersonBean;
 import pe.tp1.hdpeta.jalame.Bean.ServicioBean;
 import pe.tp1.hdpeta.jalame.Bean.VehiculoBean;
+import pe.tp1.hdpeta.jalame.DataBase.DBHelper;
 import pe.tp1.hdpeta.jalame.Interface.NearDriverList;
 import pe.tp1.hdpeta.jalame.Interface.RestClient;
 import pe.tp1.hdpeta.jalame.Network.RetrofitInstance;
@@ -58,9 +59,12 @@ public class NearDriversFragment extends Fragment {
 
     private void FillNearDrivers() {
 
+        DBHelper db = new DBHelper(getContext());
+        PersonBean personBean = db.personBean();
+
         RestClient retrofit = RetrofitInstance.getRetrofitInstance().create(RestClient.class);
 //restClient.nearDrivers(7,"-12.05165","-77.03461");
-        Call<NearDriverList> call = retrofit.nearDrivers(7,"-12.05165","-77.03461");
+        Call<NearDriverList> call = retrofit.nearDrivers(personBean.getCodPersona(),"-12.05165","-77.03461");
         call.enqueue(new Callback<NearDriverList>() {
             @Override
             public void onResponse(Call<NearDriverList> call, Response<NearDriverList> response) {
