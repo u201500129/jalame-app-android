@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import pe.tp1.hdpeta.jalame.Bean.PersonBean;
+import pe.tp1.hdpeta.jalame.DataBase.DBHelper;
 import pe.tp1.hdpeta.jalame.Interface.RestClient;
 import pe.tp1.hdpeta.jalame.Interface.ServiceList;
 import pe.tp1.hdpeta.jalame.Network.RetrofitInstance;
@@ -98,7 +99,7 @@ public class LoginActivity extends AppCompatActivity {
                 switch (response.code()) {
                     case 200:
                         PersonSingleton.getInstance().setPersonBean(response.body());
-                        openMainActivity();
+                        openMainActivityWithPersonBean(response.body());
                         break;
                     case 404:
                         Log.d("Error message ", response.raw().toString());
@@ -119,7 +120,9 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void openMainActivity() {
+    private void openMainActivityWithPersonBean(PersonBean personBean) {
+        DBHelper dbHelper = new DBHelper(this);
+        dbHelper.savePerson(personBean);
         Intent mainActivity = new Intent(this, MainActivity.class);
         startActivity(mainActivity);
         finish();

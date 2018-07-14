@@ -17,7 +17,9 @@ import java.util.List;
 
 import pe.tp1.hdpeta.jalame.Bean.PersonBean;
 import pe.tp1.hdpeta.jalame.Bean.VehiculoBean;
+import pe.tp1.hdpeta.jalame.DataBase.DBHelper;
 import pe.tp1.hdpeta.jalame.Interface.RestClient;
+import pe.tp1.hdpeta.jalame.Network.RetrofitInstance;
 import pe.tp1.hdpeta.jalame.R;
 import pe.tp1.hdpeta.jalame.Singleton.VehiculoSingleton;
 import retrofit2.Call;
@@ -86,10 +88,11 @@ public class DriverSignUpActivity extends AppCompatActivity {
             Toast.makeText(this, "Ingrese la cantidad de asientos disponibles de su vehículo", Toast.LENGTH_SHORT).show();
             return;
         }
-
+        DBHelper db = new DBHelper(this);
+        PersonBean personBean = db.personBean();
 
         VehiculoBean newCar = new VehiculoBean(0,
-                getIntent().getExtras().getInt("codPersona"),
+                personBean.getCodPersona(),
                 "",
                 txtCarBrand.getText().toString(),
                 txtCarModel.getText().toString(),
@@ -103,39 +106,30 @@ public class DriverSignUpActivity extends AppCompatActivity {
                 "",
                 0,
                 spnStateValuesArray.get(spnDriverState.getSelectedItemPosition()),
-                new Date(),
+                new Date().toString(),
                 0
                 );
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
 
-        RestClient restClient = retrofit.create(RestClient.class);
+        RestClient restClient = RetrofitInstance.getRetrofitInstance().create(RestClient.class);
         Call<VehiculoBean> call = restClient.createCar(newCar);
 
         call.enqueue(new Callback<VehiculoBean>() {
             @Override
             public void onResponse(Call<VehiculoBean> call, Response<VehiculoBean> response) {
-                switch (response.code()){
-                    case 200:
-
-                        VehiculoSingleton.getInstance().setVehiculoBean(response.body());
-                        openMainActivity();
-
-                    default:
-                        break;
-                }
+                openMainActivityWithVehiculoBean(response.body());
             }
 
             @Override
             public void onFailure(Call<VehiculoBean> call, Throwable t) {
-
+                Log.d("Error:", t.getMessage());
             }
         });
 
     }
-    private void openMainActivity() {
+    private void openMainActivityWithVehiculoBean(VehiculoBean vehiculoBean) {
+        DBHelper db = new DBHelper(this);
+        db.saveVehiculo(vehiculoBean);
+
         Intent mainActivity = new Intent(this, MainActivity.class);
         startActivity(mainActivity);
         finish();
