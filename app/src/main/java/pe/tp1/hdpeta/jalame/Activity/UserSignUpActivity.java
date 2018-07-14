@@ -30,6 +30,7 @@ public class UserSignUpActivity extends AppCompatActivity {
     private EditText txtPhone;
     private EditText txtPassword;
     private EditText txtConfirmPassword;
+    private EditText txtDNI;
     private CheckBox ckbHaveCar;
     private Button btnRegister;
 
@@ -45,6 +46,7 @@ public class UserSignUpActivity extends AppCompatActivity {
         txtLastName = (EditText) findViewById(R.id.txtLastName);
         txtEmail = (EditText) findViewById(R.id.txtEmail);
         txtPhone = (EditText) findViewById(R.id.txtPhone);
+        txtDNI = (EditText) findViewById(R.id.txtDNI);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
         txtConfirmPassword = (EditText) findViewById(R.id.txtConfirmPassword);
         btnRegister = (Button) findViewById(R.id.btnRegister);
@@ -75,6 +77,7 @@ public class UserSignUpActivity extends AppCompatActivity {
         }
 
         PersonBean newPerson = new PersonBean();
+        newPerson.setCodPersona(0);
         newPerson.setNombre(txtName.getText().toString());
         newPerson.setApellido(txtLastName.getText().toString());
         newPerson.setClave(txtPassword.getText().toString());
@@ -82,8 +85,7 @@ public class UserSignUpActivity extends AppCompatActivity {
         newPerson.setTelefono(txtPhone.getText().toString());
         newPerson.setCalificacion(0);
         newPerson.setCarrera("");
-        newPerson.setCodPersona(0);
-        newPerson.setDni("");
+        newPerson.setDni(txtDNI.getText().toString());
         newPerson.setEstadoR("");
         if (ckbHaveCar.isChecked()){
             newPerson.setPerfil("C");
