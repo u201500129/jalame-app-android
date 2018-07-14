@@ -137,7 +137,7 @@ public class PersonBean {
         values.put("apellido", this.apellido);
         values.put("sexo", this.sexo);
         values.put("dni", this.dni);
-        values.put("dni", this.perfil);
+        values.put("perfil", this.perfil);
         values.put("carrera", this.carrera);
         values.put("correo", this.correo);
         values.put("telefono", this.telefono);
