@@ -2,9 +2,12 @@ package pe.tp1.hdpeta.jalame.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -30,9 +33,14 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+/*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,6 +49,8 @@ public class MainActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
+*/
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -97,32 +107,63 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = null;
+        boolean needCheck = true;
+
 
         if (id == R.id.nav_ubicacion) {
-            fragmentManager.beginTransaction().replace(R.id.container, new MapFragment()).commit();
+            fragment = MapFragment.newInstance();
         } else if (id == R.id.nav_conductor) {
-            fragmentManager.beginTransaction().replace(R.id.container, new NearDriversFragment()).commit();
+            fragment = new NearDriversFragment();
         } else if (id == R.id.nav_servicios) {
-            fragmentManager.beginTransaction().replace(R.id.container, new ServiciosFragment()).commit();
+            fragment = new ServiciosFragment();
         } else if (id == R.id.nav_pagos) {
 
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
-
+            needCheck=false;
         } else if (id == R.id.nav_calificar) {
-
+            needCheck=false;
         } else if (id == R.id.nav_logout) {
-
+            needCheck=false;
             Intent loginActivity = new Intent(this, LoginActivity.class);
             startActivity(loginActivity);
             finish();
 
         }
 
+        if ( fragment != null){
+            // Parameters to Fragment
+            //SampleFragment fragment = new SampleFragment();
+            //Bundle args = new Bundle();
+            //args.putInt(SampleFragment.ARG_POSITION, position);
+            //fragment.setArguments(args);
+
+            //Paso 1: Obtener la instancia del administrador de fragmentos
+            FragmentManager fragmentManager = getSupportFragmentManager();
+
+            //Paso 2: Crear una nueva transacción
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+            //Paso 3: Añadir/Remplazar el nuevo fragmento creado al Activity
+            transaction.replace(R.id.container , fragment);
+            //transaction.add(R.id.content_main, fragment);
+
+            transaction.addToBackStack(null);
+
+            //Paso 4: Confirmar el cambio
+            transaction.commit();
+        }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
+        if (needCheck) item.setChecked(true);
+
+        getSupportActionBar().setTitle(item.getTitle());
+
         return true;
+
     }
 }
