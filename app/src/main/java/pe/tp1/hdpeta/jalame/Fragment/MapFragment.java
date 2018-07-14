@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import pe.tp1.hdpeta.jalame.R;
+import pe.tp1.hdpeta.jalame.Singleton.PersonSingleton;
 
 
 public class MapFragment extends Fragment {
@@ -69,6 +71,7 @@ public class MapFragment extends Fragment {
 
             }
         });
+
 
         return rootView;
     }

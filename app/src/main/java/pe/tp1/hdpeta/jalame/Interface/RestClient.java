@@ -14,6 +14,9 @@ import retrofit2.http.Path;
 
 public interface RestClient {
 
+    @GET("jalame/servicio/list/user/{userId}")
+    Call<ServiceList> services(@Path("userId") int userId);
+
     @GET("jalame/vehiculo/list/{userId}/{latitud}/{longitud}/")
     Call<List<VehiculoBean>> nearDrivers(
             @Path("userId") int userId,
@@ -31,4 +34,6 @@ public interface RestClient {
 
     @POST("/jalame/vehiculo/add")
     Call<VehiculoBean> createCar(@Body VehiculoBean vehiculoBean);
+
+
 }

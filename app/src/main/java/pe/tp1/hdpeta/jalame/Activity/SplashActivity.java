@@ -16,7 +16,7 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 presentLoginActivity();
             }
-        }, 3000);
+        }, 2000);
     }
 
     private void presentLoginActivity() {

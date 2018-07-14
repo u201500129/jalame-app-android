@@ -37,4 +37,6 @@
     <string name="marca_y_modelo_del_auto">Marca y modelo del vehículo</string>
     <string name="placa_del_auto">Matrícula del vehículo</string>
     <string name="car_distance">Distancia del vehículo</string>
+
+    <string name="BASE_URL">http://services.tarrillobarba.com.pe:6789/</string>
 </resources>

@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -18,7 +17,10 @@ import com.google.gson.GsonBuilder;
 
 import pe.tp1.hdpeta.jalame.Bean.PersonBean;
 import pe.tp1.hdpeta.jalame.Interface.RestClient;
+import pe.tp1.hdpeta.jalame.Interface.ServiceList;
+import pe.tp1.hdpeta.jalame.Network.RetrofitInstance;
 import pe.tp1.hdpeta.jalame.R;
+import pe.tp1.hdpeta.jalame.Singleton.PersonSingleton;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -83,17 +85,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void callLogin(String userEmail, String password) {
-        Gson gson = new GsonBuilder()
-                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                .create();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        RestClient restClient = RetrofitInstance.getRetrofitInstance().create(RestClient.class);
 
-
-        RestClient restClient = retrofit.create(RestClient.class);
         Call<PersonBean> call = restClient.credentials(userEmail,password);
 
         call.enqueue(new Callback<PersonBean>() {
@@ -103,9 +97,8 @@ public class LoginActivity extends AppCompatActivity {
                 progressDialog.dismiss();
                 switch (response.code()) {
                     case 200:
-                        PersonBean data = response.body();
-                        Log.d("Person Code", String.valueOf(data.getCodPersona()));
-                        openMainActivityWithPerson(data);
+                        PersonSingleton.getInstance().setPersonBean(response.body());
+                        openMainActivity();
                         break;
                     case 404:
                         Log.d("Error message ", response.raw().toString());
@@ -126,13 +119,8 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void openMainActivityWithPerson(PersonBean personBean) {
-
-        Bundle personBundle = new Bundle();
-        personBundle.putString("nombre", personBean.getNombre());
-        personBundle.putString("email", personBean.getCorreo());
+    private void openMainActivity() {
         Intent mainActivity = new Intent(this, MainActivity.class);
-        mainActivity.putExtras(personBundle);
         startActivity(mainActivity);
         finish();
     }

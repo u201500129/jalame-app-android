@@ -63,4 +63,9 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.Servic
 
         }
     }
+
+    public void updateNewServices(List<ServicioBean> services){
+        this.services = services;
+        notifyDataSetChanged();
+    }
 }
