@@ -164,6 +164,11 @@ public class DBHelper extends SQLiteOpenHelper {
         db.insert("PERSONA",null, personBean.toContentValues());
     }
 
+    public void updatePerson(PersonBean personBean){
+        SQLiteDatabase db = getWritableDatabase();
+        db.update("PERSONA", personBean.toContentValues(), "codPersona=?", new String[]{String.valueOf(personBean.getCodPersona())});
+    }
+
     public int deletePerson(String codPersona){
         return getWritableDatabase().delete("PERSONA","codPersona=?",new String[]{codPersona});
     }
