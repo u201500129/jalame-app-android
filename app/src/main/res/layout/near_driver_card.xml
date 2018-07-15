@@ -8,7 +8,7 @@
     app:cardCornerRadius="10dp">
 
     <LinearLayout
-        android:padding="20dp"
+        android:padding="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -17,6 +17,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginRight="10dp"
+        android:layout_gravity="center_vertical"
         android:src="@drawable/car_placeholder"
         android:id="@+id/imgCarProfile"/>
 
@@ -28,18 +29,28 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="@string/driver_name"
+                android:id="@+id/txtDriverName"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:text="@string/marca_y_modelo_del_auto"
                 android:id="@+id/txtBrandModelCar"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:text="@string/placa_del_auto"
                 android:id="@+id/txtLicenseRegistrationCar"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:text="@string/car_distance"
                 android:id="@+id/txtCarDistance"/>
 

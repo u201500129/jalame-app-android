@@ -30,6 +30,9 @@ public interface RestClient {
             @Path("password") String password
     );
 
+    @GET("/jalame/person/get/{userId}")
+    Call<PersonBean> getUser(@Path("userId") int userId);
+
     @POST("/jalame/person/add")
     Call<PersonBean> createUser(@Body PersonBean personBean);
 
