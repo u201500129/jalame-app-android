@@ -52,4 +52,5 @@
     <string name="solicitar_servicio">Solicitar servicio</string>
     <string name="cancelar_pedido_solicitud">Cancelar</string>
     <string name="confirmar_solicitud">Aceptar</string>
+    <string name="matricula">Matricula</string>
 </resources>

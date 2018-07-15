@@ -55,7 +55,7 @@
             android:value="15.0.1" />
 
         <activity
-            android:theme="@style/Base.V7.Theme.AppCompat.Light.Dialog"
+            android:theme="@style/Base.Theme.AppCompat.Dialog"
             android:name=".Activity.Dialog.ConfirmRequestDialogActivity"></activity>
     </application>
 

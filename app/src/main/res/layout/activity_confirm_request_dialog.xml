@@ -9,28 +9,35 @@
     android:padding="20dp"
     tools:context=".Activity.Dialog.ConfirmRequestDialogActivity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/solicitar_servicio"
-        android:textStyle="bold"
-        android:textAlignment="center"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/nombre_del_conductor"
+        android:layout_marginBottom="5dp"
+        android:textStyle="bold"
+        android:textSize="15dp"
         android:id="@+id/lblDriverName"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:textStyle="bold"
+        android:text="@string/matricula"
+        android:id="@+id/lblMatricula"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:text="@string/marca_y_modelo_del_auto"
         android:id="@+id/lblCardBrandModel"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:text="@string/calification"
         android:id="@+id/lblCalificacion"/>
 

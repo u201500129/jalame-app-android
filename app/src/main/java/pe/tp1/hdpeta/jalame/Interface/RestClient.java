@@ -30,6 +30,7 @@ public interface RestClient {
             @Path("password") String password
     );
 
+
     @GET("/jalame/person/get/{userId}")
     Call<PersonBean> getUser(@Path("userId") int userId);
 
@@ -38,6 +39,9 @@ public interface RestClient {
 
     @POST("/jalame/vehiculo/add")
     Call<VehiculoBean> createCar(@Body VehiculoBean vehiculoBean);
+
+    @POST("/jalame/servicio/add")
+    Call<ServicioBean> createCar(@Body ServicioBean servicioBean);
 
     @PUT("/jalame/person/update")
     Call<PersonBean> updateUser(@Body PersonBean personBean);
