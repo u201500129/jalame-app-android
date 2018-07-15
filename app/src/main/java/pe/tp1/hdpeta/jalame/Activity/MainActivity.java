@@ -23,6 +23,7 @@ import pe.tp1.hdpeta.jalame.Bean.PersonBean;
 import pe.tp1.hdpeta.jalame.DataBase.DBHelper;
 import pe.tp1.hdpeta.jalame.Fragment.MapFragment;
 import pe.tp1.hdpeta.jalame.Fragment.ProfileFragment;
+import pe.tp1.hdpeta.jalame.Fragment.QualifyServiceFragment;
 import pe.tp1.hdpeta.jalame.Fragment.ServiciosFragment;
 import pe.tp1.hdpeta.jalame.Fragment.NearDriversFragment;
 import pe.tp1.hdpeta.jalame.R;
@@ -142,7 +143,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_conductor) {
             fragment = new NearDriversFragment();
         } else if (id == R.id.nav_servicios) {
-            fragment = new ServiciosFragment();
+            //fragment = new ServiciosFragment(); William
+            fragment = new QualifyServiceFragment();
         } else if (id == R.id.nav_pagos) {
 
         } else if (id == R.id.nav_manage) {
