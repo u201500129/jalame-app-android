@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    tools:context=".Fragment.QualifyServiceFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="20dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Calificar Servicio"
+            android:textStyle="bold"
+            android:textSize="30dp"
+            android:id="@+id/txtNombre"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="Ayúdanos a mejorar dejando tu calificación y comentarios de tu servicio."
+            android:layout_marginTop="5dp"
+            android:textSize="15dp"
+            android:id="@+id/txtDni"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <RatingBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ratingBar"
+                android:stepSize="1"
+                android:progressBackgroundTint="@color/colorNotRated"/>
+        </LinearLayout>
+
+        <View
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorNotRated"/>
+
+        <EditText
+            android:id="@+id/txtComentario"
+            android:hint="Envía tus comentarios"
+            android:layout_marginTop="15dp"
+            android:gravity="top|left"
+            android:inputType="textMultiLine"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:lines="5"
+            android:scrollHorizontally="false" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Calificar Servicio"
+                android:textColor="#FFF"
+                android:textSize="18dp"
+                android:textAllCaps="false"
+                android:background="@color/colorPrimaryDark"
+                android:id="@+id/btnCalificar"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>
