@@ -1,13 +1,13 @@
 package pe.tp1.hdpeta.jalame.Fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,10 +43,18 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import pe.tp1.hdpeta.jalame.Activity.Dialog.ConfirmRequestDialogActivity;
 import pe.tp1.hdpeta.jalame.Bean.PersonBean;
+import pe.tp1.hdpeta.jalame.Bean.VehiculoBean;
 import pe.tp1.hdpeta.jalame.DataBase.DBHelper;
+import pe.tp1.hdpeta.jalame.Interface.NearDriverList;
+import pe.tp1.hdpeta.jalame.Interface.RestClient;
 import pe.tp1.hdpeta.jalame.Network.HttpUrlHandler;
+import pe.tp1.hdpeta.jalame.Network.RetrofitInstance;
 import pe.tp1.hdpeta.jalame.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class MapFragment extends Fragment
@@ -64,6 +72,7 @@ public class MapFragment extends Fragment
     private LatLng latLngUser = new LatLng(-12.05165, -77.03461);
     // Plaza San Martin:  -12.05165/-77.03461
 
+    private ArrayList<VehiculoBean> drivers;
     private  String idUser;
     private  String idCar;
     private String mLastUpdateTime;
@@ -188,7 +197,8 @@ public class MapFragment extends Fragment
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        solicitarServicioDialog();
+        String position = marker.getTag().toString();
+        solicitarServicioDialog(Integer.valueOf(Integer.valueOf(position)));
         return false;
     }
 
@@ -275,45 +285,6 @@ public class MapFragment extends Fragment
     }
 
 
-
-
-
-    private void createMarker(String tipo, int id, String lat, String lng, String titulo, String descripcion, float index){
-        // Add a markers
-        Marker nMarker;
-        try{
-
-            MarkerOptions mOptions = new MarkerOptions().position(new LatLng(Double.parseDouble(lat), Double.parseDouble(lng)));
-            mOptions.title(titulo);
-            mOptions.snippet(descripcion);
-
-            // Changing marker icon
-            if (tipo.equals("V")){
-                mOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.iccarb));
-            }else if (tipo.equals("U")){
-                mOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.icflag));
-            }else if (tipo.equals("P")){
-                mOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.iclocation));
-            }else {
-                mOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-            }
-
-            mOptions.zIndex(index);
-
-            // adding marker
-            if (mMap != null) {
-                nMarker = mMap.addMarker(mOptions);
-                nMarker.setTag(tipo + String.valueOf(id));
-            }
-
-        }catch (SecurityException e){
-            System.out.println("Marker Error: " + e.getMessage());
-        }
-    }
-
-
-
-
     private void updateMarkers(){
         if (mLastLocation != null){
             mMap.clear();
@@ -326,7 +297,7 @@ public class MapFragment extends Fragment
                 createMarker("U", personBean.getCodPersona(),
                         String.valueOf(latLngUser.latitude),
                         String.valueOf(latLngUser.longitude),
-                        personBean.getNombre(), personBean.getApellido(),9);
+                        personBean.getNombre(), personBean.getApellido(),9, 100);
 
                 //Lista vehiculos cercanos
                 listaVehiculos();
@@ -335,7 +306,7 @@ public class MapFragment extends Fragment
                 createMarker("V", personBean.getCodPersona(),
                         String.valueOf(latLngUser.latitude),
                         String.valueOf(latLngUser.longitude),
-                        personBean.getNombre(), personBean.getApellido(),9);
+                        personBean.getNombre(), personBean.getApellido(),9, 200);
 
                 //Lista las solicitudes de Usuario
                 listaUsuarios();
@@ -378,7 +349,7 @@ public class MapFragment extends Fragment
                                     joService.getString("usuario"), "Destino: "+
                                     joService.getString("destinoDes") + "   " +
                                     joService.getString("formaPago") + " :  S/ " +
-                                            String.valueOf(joService.getDouble("importe")), 0);
+                                            String.valueOf(joService.getDouble("importe")), 0, item);
                         }
 
                         item ++;
@@ -396,6 +367,7 @@ public class MapFragment extends Fragment
 
     private  void listaVehiculos(){
 
+        /*
         String path =  "vehiculo/list/" + idUser +"/" +  latLngUser.latitude + "/" + latLngUser.longitude;
 
         HttpUrlHandler httpRest = new HttpUrlHandler("GET", path);
@@ -429,6 +401,94 @@ public class MapFragment extends Fragment
                     Log.w("JALAME", "ERROR: JSON " + e.getMessage());
                 }
             }
+        }*/
+
+        RestClient restClient = RetrofitInstance.getRetrofitInstance().create(RestClient.class);
+        Call<NearDriverList> call = restClient.nearDrivers(Integer.parseInt(idUser),
+                String.valueOf(latLngUser.latitude),
+                String.valueOf(latLngUser.longitude));
+
+        call.enqueue(new Callback<NearDriverList>() {
+            @Override
+            public void onResponse(Call<NearDriverList> call, Response<NearDriverList> response) {
+                drivers = response.body().getVehiculoArrayList();
+                prepareDriverMarkers(drivers);
+            }
+
+            @Override
+            public void onFailure(Call<NearDriverList> call, Throwable t) {
+                Log.d("Error", t.getMessage());
+            }
+        });
+    }
+
+    private void createMarker(String tipo, int id, String lat, String lng, String titulo, String descripcion, float index, int position){
+        // Add a markers
+        Marker nMarker;
+        try{
+
+            MarkerOptions mOptions = new MarkerOptions().position(new LatLng(Double.parseDouble(lat), Double.parseDouble(lng)));
+            mOptions.title(titulo);
+            mOptions.snippet(descripcion);
+
+
+            // Changing marker icon
+            if (tipo.equals("V")){
+                mOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.iccarb));
+            }else if (tipo.equals("U")){
+                mOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.icflag));
+            }else if (tipo.equals("P")){
+                mOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.iclocation));
+            }else {
+                mOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+            }
+
+            mOptions.zIndex(index);
+
+            // adding marker
+            if (mMap != null) {
+                nMarker = mMap.addMarker(mOptions);
+                nMarker.setTag(String.valueOf(position));
+            }
+
+        }catch (SecurityException e){
+            System.out.println("Marker Error: " + e.getMessage());
+        }
+    }
+
+    private void prepareDriverMarkers(ArrayList<VehiculoBean> drivers){
+        int position = 0;
+        for (VehiculoBean driver:drivers) {
+            createMarker("V",
+                    driver.getCodVehiculo(),
+                    driver.getLatitud(),
+                    driver.getLongitud(),
+                    driver.getCalificacion() + "E | " + driver.getMatricula(),
+                    driver.getMarca() + " " + driver.getModelo() + " " + driver.getaFabrica(),
+                    0,
+                    position);
+            position ++;
+            /*
+            Marker marker;
+            try{
+                LatLng driverLatLng = new LatLng(Double.parseDouble(driver.getLatitud()), Double.parseDouble(driver.getLongitud()));
+                MarkerOptions markerOptions = new MarkerOptions().
+                        position(driverLatLng);
+                markerOptions.title(driver.getMarca() + "" + driver.getModelo());
+                markerOptions.snippet("Calificación: " + String.valueOf(driver.getCalificacion()) + "estrellas");
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.iccarb));
+                markerOptions.zIndex(0);
+                Log.d("Marca", driver.getMarca());
+                if (mMap != null){
+                    marker = mMap.addMarker(markerOptions);
+                    marker.setTag(driver.getCodVehiculo());
+                }
+
+            } catch (SecurityException e){
+                Log.d("Marker Error: ", e.getMessage());
+            }
+
+            */
         }
     }
 
@@ -492,13 +552,32 @@ public class MapFragment extends Fragment
     }
 
 
-    private void solicitarServicioDialog() {
+    private void solicitarServicioDialog(int markerPosition) {
+
+        /*
         FragmentManager fm =   this.getActivity().getSupportFragmentManager();
         SolicitaServicioFragment solicitServiceFragment = SolicitaServicioFragment.newInstance("Solicitar Servicio");
-
         solicitServiceFragment.setTargetFragment(MapFragment.this,300);
-
         solicitServiceFragment.show(fm, "fragment_solicit_service");
+        */
+        Log.d("Marker position: ", String.valueOf(markerPosition));
+
+        if (markerPosition < 100) {
+            VehiculoBean driver = drivers.get(markerPosition);
+            Intent solicitudActivity = new Intent(getContext(), ConfirmRequestDialogActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt("codVehiculo", driver.getCodVehiculo());
+            bundle.putInt("codPersona", driver.getCodPersona());
+            bundle.putString("marca",driver.getMarca());
+            bundle.putString("modelo",driver.getModelo());
+            bundle.putString("matricula",driver.getMatricula());
+            bundle.putInt("asientosDisponibles",driver.getAsientosDisp());
+            bundle.putInt("distancia",driver.getDistancia());
+            bundle.putString("aFabrica",driver.getaFabrica());
+            solicitudActivity.putExtras(bundle);
+            getActivity().startActivity(solicitudActivity);
+        }
+
     }
 
 
