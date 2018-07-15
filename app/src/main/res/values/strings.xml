@@ -49,4 +49,7 @@
     <string name="nombre_del_conductor">Nombre del Conductor</string>
     <string name="monto">Monto:</string>
     <string name="forma_de_pago">Forma de Pago:</string>
+    <string name="solicitar_servicio">Solicitar servicio</string>
+    <string name="cancelar_pedido_solicitud">Cancelar</string>
+    <string name="confirmar_solicitud">Aceptar</string>
 </resources>
