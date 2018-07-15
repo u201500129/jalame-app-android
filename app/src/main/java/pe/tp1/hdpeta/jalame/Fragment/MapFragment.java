@@ -12,6 +12,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.gms.location.LocationCallback;
@@ -36,6 +40,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import pe.tp1.hdpeta.jalame.Bean.PersonBean;
@@ -59,9 +64,12 @@ public class MapFragment extends Fragment
     private LatLng latLngUser = new LatLng(-12.05165, -77.03461);
     // Plaza San Martin:  -12.05165/-77.03461
 
+    private  String idUser;
+    private  String idCar;
     private String mLastUpdateTime;
     private boolean mLocationPermissionGranted;
-    private Boolean mRequestingLocationUpdates;
+    private boolean mRequestingLocationUpdates;
+    private boolean bEnableSolicitud;
     private static final int TAG_CODE_PERMISSION_LOCATION = 1 ;
     private static final int DEFAULT_ZOOM = 15;
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 20000;
@@ -85,18 +93,54 @@ public class MapFragment extends Fragment
 
         DBHelper db = new DBHelper(getContext());
         personBean = db.personBean();
+        idUser = String.valueOf(personBean.getCodPersona());
+
+        Spinner spSedes = view.findViewById(R.id.spMapSedes);
+        Switch swDriverVisible = view.findViewById(R.id.swMapDriver);
+
+        if (personBean.getPerfil().toUpperCase().trim().equals("U")){
+            ArrayList<String> listSedes = new ArrayList<String>();
+            listSedes.add("UPC MONTERRICO");
+            listSedes.add("UPC VILLA");
+            listSedes.add("UPC SAN ISIDRO");
+            listSedes.add("UPC SAN MIGULE");
+            ArrayAdapter adapter = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, listSedes);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spSedes.setAdapter(adapter);
+
+            swDriverVisible.setVisibility(View.GONE);
+
+        }else {
+            getMyCarId();
+
+            spSedes.setVisibility(View.INVISIBLE);
+            swDriverVisible.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if ( isChecked ){
+                        updateVisible(idCar,"S");
+                        Toast.makeText(getContext(),"Su vehiculo es VISIBLE a usuarios.", Toast.LENGTH_SHORT).show();
+                    }else {
+                        updateVisible(idCar,"N");
+                        Toast.makeText(getContext(),"Su vehiculo está OCULTO a usuarios.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+
+
+
 
         getLocationPermission();
 
         if (mLocationPermissionGranted )  {
+
             //Construct a FusedLocationProviderClient.
             mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
 
+            //Looper
             initLocationCallback();
-            //getDriverLocation2();
 
-
-            System.out.println("mLocationPermissionGranted TRUE,   initLocationCallback()");
         }
 
         return view;
@@ -130,7 +174,7 @@ public class MapFragment extends Fragment
                 //mMap.setLocationSource();
 
             } else {
-                Toast.makeText(this.getActivity(),"Necesita permisos para acceder al MAPA.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),"Necesita permisos para acceder al MAPA.", Toast.LENGTH_SHORT).show();
             }
 
         } catch (InterruptedException e) {
@@ -144,7 +188,7 @@ public class MapFragment extends Fragment
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        solicitarServicio();
+        solicitarServicioDialog();
         return false;
     }
 
@@ -159,7 +203,6 @@ public class MapFragment extends Fragment
                 CameraPosition cameraPosition = new CameraPosition.Builder().target(punto).zoom(DEFAULT_ZOOM).build();
                 mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLngUser, DEFAULT_ZOOM));
-                //listaVehiculos();
             }
         }catch (SecurityException e){
             System.out.println("Error: " + e.getMessage());
@@ -176,7 +219,7 @@ public class MapFragment extends Fragment
             //}else if (ActivityCompat.shouldShowRequestPermissionRationale(this.getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION)) {
         }else{
             ActivityCompat.requestPermissions(this.getActivity(), new String[] { android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION }, TAG_CODE_PERMISSION_LOCATION);
-            Toast.makeText(this.getActivity(),"Permiso denegado, Imposible acceder a la ubicacion", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(),"Permiso denegado, Imposible acceder a la ubicacion", Toast.LENGTH_SHORT).show();
             mLocationPermissionGranted = false;
         }
         return mLocationPermissionGranted;
@@ -190,7 +233,7 @@ public class MapFragment extends Fragment
             case TAG_CODE_PERMISSION_LOCATION: {
                 if (grantResults.length == 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     mLocationPermissionGranted = true;
-                    Toast.makeText(this.getActivity(), "Permiso denegado, Sin Ubicacion", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Permiso denegado, Sin Ubicacion", Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -235,7 +278,7 @@ public class MapFragment extends Fragment
 
 
 
-    private void createMarker(String tipo, int id, String lat, String lng, String titulo, String descripcion){
+    private void createMarker(String tipo, int id, String lat, String lng, String titulo, String descripcion, float index){
         // Add a markers
         Marker nMarker;
         try{
@@ -249,18 +292,20 @@ public class MapFragment extends Fragment
                 mOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.iccarb));
             }else if (tipo.equals("U")){
                 mOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.icflag));
-                mOptions.zIndex(9);
             }else if (tipo.equals("P")){
                 mOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.iclocation));
             }else {
                 mOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
             }
 
+            mOptions.zIndex(index);
+
             // adding marker
             if (mMap != null) {
                 nMarker = mMap.addMarker(mOptions);
                 nMarker.setTag(tipo + String.valueOf(id));
             }
+
         }catch (SecurityException e){
             System.out.println("Marker Error: " + e.getMessage());
         }
@@ -275,25 +320,81 @@ public class MapFragment extends Fragment
 
             latLngUser = new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
 
-            createMarker("U", personBean.getCodPersona(),
-                    String.valueOf(latLngUser.latitude),
-                    String.valueOf(latLngUser.longitude),
-                    personBean.getNombre(), personBean.getApellido());
-
             centerCamera(mLastLocation.getLatitude(),mLastLocation.getLongitude());
 
-            listaVehiculos();
+            if(personBean.getPerfil().trim().toUpperCase().equals("U")){
+                createMarker("U", personBean.getCodPersona(),
+                        String.valueOf(latLngUser.latitude),
+                        String.valueOf(latLngUser.longitude),
+                        personBean.getNombre(), personBean.getApellido(),9);
+
+                //Lista vehiculos cercanos
+                listaVehiculos();
+
+            }else{
+                createMarker("V", personBean.getCodPersona(),
+                        String.valueOf(latLngUser.latitude),
+                        String.valueOf(latLngUser.longitude),
+                        personBean.getNombre(), personBean.getApellido(),9);
+
+                //Lista las solicitudes de Usuario
+                listaUsuarios();
+
+                //Actualiza su ubicacion en BD
+                updateDrivePosition(idCar, latLngUser.latitude, latLngUser.longitude);
+            }
         }
+    }
+
+
+    private  void listaUsuarios(){
+
+
+        String path =  "servicio/list/driver/" + idUser ;
+
+        HttpUrlHandler httpRest = new HttpUrlHandler("GET", path);
+
+        String jsonString ;
+
+
+        if (httpRest.readREST()){
+            jsonString = httpRest.getJsonString();
+
+            if (jsonString.length() > 10) {
+                try {
+                    //Creando Objeto JSON
+                    JSONObject joServiceAll = new JSONObject(jsonString);
+                    JSONArray joServiceArray = (JSONArray) joServiceAll.get("servicio");
+                    int item = 0;
+
+                    while (item < joServiceArray.length()){
+                        JSONObject joService = joServiceArray.getJSONObject(item);
+
+                        // Solo Pintamos las Solicitudes Pendientes
+                        if (joService.getString("estadoServ").trim().toUpperCase().equals("S")){
+                            createMarker( "U", joService.getInt("codServicio"),
+                                    joService.getString("origenLat"),
+                                    joService.getString("origenLon"),
+                                    joService.getString("usuario"), "Destino: "+
+                                    joService.getString("destinoDes") + "   " +
+                                    joService.getString("formaPago") + " :  S/ " +
+                                            String.valueOf(joService.getDouble("importe")), 0);
+                        }
+
+                        item ++;
+                    }
+                } catch (JSONException e) {
+                    Log.w("JALAME: ", "ERROR: JSON " + e.getMessage());
+                }
+            }
+        }
+
     }
 
 
 
 
     private  void listaVehiculos(){
-
-        //temp
-        String idUser = String.valueOf(personBean.getCodPersona());
-        //personBean.getPerfil();
 
         String path =  "vehiculo/list/" + idUser +"/" +  latLngUser.latitude + "/" + latLngUser.longitude;
 
@@ -321,24 +422,77 @@ public class MapFragment extends Fragment
                                         joVehiculo.getString("matricula"),
                                 joVehiculo.getString("marca") + " " +
                                         joVehiculo.getString("modelo") + " " +
-                                        joVehiculo.getString("aFabrica"));
-
+                                        joVehiculo.getString("aFabrica"),0);
                         item ++;
-                        //Log.w("JALAME", "INFO: " + joVehiculo.toString());
                     }
-
                 } catch (JSONException e) {
                     Log.w("JALAME", "ERROR: JSON " + e.getMessage());
                 }
             }
         }
+    }
+
+    private  void getMyCarId(){
+
+        String path =  "vehiculo/mylist/" + idUser  ;
+
+        HttpUrlHandler httpRest = new HttpUrlHandler("GET", path);
+
+        String jsonString ;
+
+        if (httpRest.readREST()){
+            jsonString = httpRest.getJsonString();
+
+            if (jsonString.length() > 10) {
+                try {
+                    //Creando Objeto JSON
+                    JSONObject joVehiculoAll = new JSONObject(jsonString);
+                    JSONArray joVehiculoArray = (JSONArray) joVehiculoAll.get("vehiculo");
+                    if (joVehiculoArray.length() > -1 ){
+                        JSONObject joVehiculo = joVehiculoArray.getJSONObject(0);
+                        idCar = String.valueOf(joVehiculo.getInt("codVehiculo"));
+                    }
+                } catch (JSONException e) {
+                    Log.w("JALAME", "JSON ERROR: getMyCarId " + e.getMessage());
+                }
+            }
+        }
+    }
+
+
+    private void updateDrivePosition(String idDriver, double lat, double lng){
+
+        String path =  "vehiculo/location/" + String.valueOf(idDriver).trim() +"/" +  String.valueOf(lat).trim() + "/" + String.valueOf(lng).trim();
+
+        HttpUrlHandler httpRest = new HttpUrlHandler("PUT", path);
+
+        String jsonString ;
+
+        if (httpRest.readREST()){
+            jsonString = httpRest.getJsonString();
+            System.out.println("REST READ json: " + jsonString);
+        }
 
     }
 
 
+    private void updateVisible(String idDriver, String visible){
+
+        String path =  "vehiculo/visible/" + idDriver +"/" + visible;
+
+        HttpUrlHandler httpRest = new HttpUrlHandler("PUT", path);
+
+        String jsonString ;
+
+        if (httpRest.readREST()){
+            jsonString = httpRest.getJsonString();
+            System.out.println("REST READ json: " + jsonString);
+        }
+
+    }
 
 
-    private void solicitarServicio() {
+    private void solicitarServicioDialog() {
         FragmentManager fm =   this.getActivity().getSupportFragmentManager();
         SolicitaServicioFragment solicitServiceFragment = SolicitaServicioFragment.newInstance("Solicitar Servicio");
 

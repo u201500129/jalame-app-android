@@ -12,12 +12,52 @@
         android:layout_height="match_parent"
         android:name="com.google.android.gms.maps.SupportMapFragment"/>
 
-<!--
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/mapView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
--->
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="3"
+        android:rowCount="1"
+        android:orientation="horizontal">
+        <Switch
+            android:id="@+id/swMapDriver"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#590000FF"
+            android:layout_gravity="start|top"
+            android:text="Visible: " />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#800000FF"
+            android:layout_column="2"
+            android:layout_row="0">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="#FFFFFFFF"
+                android:text="Sede:"/>
+
+            <Spinner
+                android:id="@+id/spMapSedes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#590000FF" />
+
+        </LinearLayout>
+
+
+    </GridLayout>
+
+
+    <!--
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+    -->
 
 
 </FrameLayout>

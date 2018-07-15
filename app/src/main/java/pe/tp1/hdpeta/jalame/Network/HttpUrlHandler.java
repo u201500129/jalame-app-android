@@ -50,7 +50,7 @@ public class HttpUrlHandler {
                 jsonString = responseBuffer.readLine();
                 resultado = true;
             }else {
-                Log.w("RESTfull READ: ", httpConnection.getResponseCode() + " " + httpConnection.getResponseMessage());
+                Log.w("RESTfull READ: ",  "Url:" + fullPath + "  \n Codigo:" + httpConnection.getResponseCode() + " " + httpConnection.getResponseMessage());
             }
 
             httpConnection.disconnect();
@@ -111,7 +111,7 @@ public class HttpUrlHandler {
                 jsonString = responseBuffer.readLine();
                 resultado = true;
             }else {
-                Log.w("RESTfull Read: ", httpConnection.getResponseCode() + " " + httpConnection.getResponseMessage());
+                Log.w("RESTfull Read: ", "Url:" + fullPath + "  \n Codigo:" + httpConnection.getResponseCode() + " " + httpConnection.getResponseMessage());
             }
 
             //Desconectar
